@@ -143,8 +143,13 @@
  "grid_page_length": 50,
  "image_field": "banner_image",
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-07-19 12:44:00.773809",
+ "links": [
+  {
+   "link_doctype": "Event Sponsor",
+   "link_fieldname": "event"
+  }
+ ],
+ "modified": "2025-07-19 12:50:05.948987",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
