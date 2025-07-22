@@ -1,7 +1,7 @@
 {
  "app": "events",
  "charts": [],
- "content": "[{\"id\":\"zIbv_UEOb3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Frappe Events</span>\",\"col\":12}},{\"id\":\"B7T9hOVByA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Events\",\"col\":4}},{\"id\":\"6EmoNKPAq9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hosts\",\"col\":4}},{\"id\":\"2pkzzN2QBq\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create New Event\",\"col\":4}},{\"id\":\"HUpOTcgLjG\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"LwunpBpLEf\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Events this Month\",\"col\":4}}]",
+ "content": "[{\"id\":\"zIbv_UEOb3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Frappe Events</span>\",\"col\":12}},{\"id\":\"B7T9hOVByA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Events\",\"col\":4}},{\"id\":\"6EmoNKPAq9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hosts\",\"col\":4}},{\"id\":\"2pkzzN2QBq\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Create New Event\",\"col\":4}},{\"id\":\"HUpOTcgLjG\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"LwunpBpLEf\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Events this Month\",\"col\":4}},{\"id\":\"O38IUyNBcm\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"AJ9C_o5Z5X\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bookings\",\"col\":4}},{\"id\":\"DBwgGwt5rK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Tickets\",\"col\":4}}]",
  "creation": "2025-07-19 12:52:25.932004",
  "custom_blocks": [],
  "docstatus": 0,
@@ -15,7 +15,7 @@
  "label": "Events",
  "link_type": "DocType",
  "links": [],
- "modified": "2025-07-19 12:57:05.051924",
+ "modified": "2025-07-22 20:31:50.031824",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "Events",
@@ -33,6 +33,23 @@
  "roles": [],
  "sequence_id": 23.0,
  "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "format": "{} Done",
+   "label": "Bookings",
+   "link_to": "Event Booking",
+   "stats_filter": "[[\"Event Booking\",\"docstatus\",\"=\",\"1\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Tickets",
+   "link_to": "Event Ticket",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
   {
    "color": "Grey",
    "doc_view": "New",
