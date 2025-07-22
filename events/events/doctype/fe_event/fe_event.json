@@ -147,9 +147,21 @@
   {
    "link_doctype": "Event Sponsor",
    "link_fieldname": "event"
+  },
+  {
+   "link_doctype": "Event Ticket Type",
+   "link_fieldname": "event"
+  },
+  {
+   "link_doctype": "Event Booking",
+   "link_fieldname": "event"
+  },
+  {
+   "link_doctype": "Event Ticket",
+   "link_fieldname": "event"
   }
  ],
- "modified": "2025-07-19 12:50:05.948987",
+ "modified": "2025-07-22 19:59:37.998366",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
