@@ -11,7 +11,9 @@
   "column_break_xmfr",
   "email",
   "amount",
-  "currency"
+  "currency",
+  "add_ons",
+  "add_on_total"
  ],
  "fields": [
   {
@@ -59,13 +61,25 @@
    "label": "Amount",
    "non_negative": 1,
    "options": "currency"
+  },
+  {
+   "fieldname": "add_ons",
+   "fieldtype": "Link",
+   "label": "Add Ons",
+   "options": "Attendee Ticket Add-on"
+  },
+  {
+   "fieldname": "add_on_total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Add On Total"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-22 20:18:03.344680",
+ "modified": "2025-07-26 13:19:03.512521",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Booking Attendee",
