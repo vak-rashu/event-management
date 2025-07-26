@@ -9,7 +9,8 @@
   "event",
   "booking",
   "column_break_sqmr",
-  "ticket_type"
+  "ticket_type",
+  "amended_from"
  ],
  "fields": [
   {
@@ -48,18 +49,30 @@
    "label": "Ticket Type",
    "options": "Event Ticket Type",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Event Ticket",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-07-22 20:29:35.983727",
+ "modified": "2025-07-26 11:14:39.811657",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",
  "owner": "Administrator",
  "permissions": [
   {
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -69,6 +82,22 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Event Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

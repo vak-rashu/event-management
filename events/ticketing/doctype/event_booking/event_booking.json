@@ -98,13 +98,14 @@
    "link_fieldname": "booking"
   }
  ],
- "modified": "2025-07-22 20:22:03.085925",
+ "modified": "2025-07-26 11:14:26.016575",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Booking",
  "owner": "Administrator",
  "permissions": [
   {
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -113,6 +114,22 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Event Manager",
+   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1

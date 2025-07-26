@@ -6,4 +6,22 @@ from frappe.model.document import Document
 
 
 class EventHost(Document):
+	# begin: auto-generated types
+	# This code is auto-generated. Do not modify anything in this block.
+
+	from typing import TYPE_CHECKING
+
+	if TYPE_CHECKING:
+		from frappe.types import DF
+
+		from events.events.doctype.social_media_link.social_media_link import SocialMediaLink
+
+		about: DF.TextEditor | None
+		address: DF.SmallText | None
+		by_line: DF.Data | None
+		country: DF.Link | None
+		logo: DF.AttachImage | None
+		social_media_links: DF.Table[SocialMediaLink]
+	# end: auto-generated types
+
 	pass

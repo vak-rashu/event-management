@@ -48,8 +48,4 @@ class EventBooking(Document):
 			ticket.booking = self.name
 			ticket.ticket_type = attendee.ticket_type
 			ticket.attendee_name = attendee.full_name
-			ticket.insert()
-
-	def on_cancel(self):
-		# TODO: self.cancel_tickets()
-		pass
+			ticket.insert().submit()
