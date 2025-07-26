@@ -145,23 +145,42 @@
  "index_web_pages_for_search": 1,
  "links": [
   {
+   "group": "Sponsorship",
    "link_doctype": "Event Sponsor",
    "link_fieldname": "event"
   },
   {
+   "group": "Sponsorship",
+   "link_doctype": "Sponsorship Tier",
+   "link_fieldname": "event"
+  },
+  {
+   "group": "Ticketing",
    "link_doctype": "Event Ticket Type",
    "link_fieldname": "event"
   },
   {
+   "group": "Ticketing",
    "link_doctype": "Event Booking",
    "link_fieldname": "event"
   },
   {
+   "group": "Ticketing",
    "link_doctype": "Event Ticket",
+   "link_fieldname": "event"
+  },
+  {
+   "group": "Proposals",
+   "link_doctype": "Sponsorship Proposal",
+   "link_fieldname": "event"
+  },
+  {
+   "group": "Proposals",
+   "link_doctype": "Talk Proposal",
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-07-26 11:13:28.363550",
+ "modified": "2025-07-26 12:23:48.295285",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",

@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class EventTrack(Document):
+class TalkProposal(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,6 +14,14 @@ class EventTrack(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		from events.events.doctype.proposal_speaker.proposal_speaker import ProposalSpeaker
+
+		description: DF.TextEditor | None
+		event: DF.Link
+		speakers: DF.Table[ProposalSpeaker]
+		status: DF.Literal["Review Pending", "Shortlisted", "Approved", "Rejected"]
+		submitted_by: DF.Link
+		title: DF.Data
 	# end: auto-generated types
 
 	pass

@@ -1,20 +1,22 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "prompt",
  "creation": "2025-07-19 12:48:18.436949",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "company_name",
   "logo",
   "column_break_ozou",
-  "event"
+  "event",
+  "tier"
  ],
  "fields": [
   {
    "fieldname": "logo",
    "fieldtype": "Attach Image",
-   "label": "Logo"
+   "label": "Logo",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_ozou",
@@ -27,17 +29,29 @@
    "label": "Event",
    "options": "FE Event",
    "reqd": 1
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tier",
+   "fieldtype": "Link",
+   "label": "Tier",
+   "options": "Sponsorship Tier",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "image_field": "logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-19 12:49:35.796393",
+ "modified": "2025-07-26 12:19:04.679639",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "Event Sponsor",
- "naming_rule": "Set by user",
  "owner": "Administrator",
  "permissions": [
   {
