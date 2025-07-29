@@ -14,6 +14,7 @@ class EventTrack(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		event: DF.Link
 	# end: auto-generated types
 
 	pass

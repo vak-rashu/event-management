@@ -183,9 +183,14 @@
    "group": "Proposals",
    "link_doctype": "Talk Proposal",
    "link_fieldname": "event"
+  },
+  {
+   "group": "General",
+   "link_doctype": "Event Track",
+   "link_fieldname": "event"
   }
  ],
- "modified": "2025-07-26 12:51:13.032005",
+ "modified": "2025-07-29 19:35:26.515080",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
