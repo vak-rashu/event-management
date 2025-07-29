@@ -35,5 +35,5 @@ class FEEvent(Document):
 	# end: auto-generated types
 
 	@frappe.whitelist()
-	def check_in(self, ticket_id: str):
-		frappe.get_doc({"doctype": "Event Check In", "ticket": ticket_id}).insert().submit()
+	def check_in(self, ticket_id: str, track: str | None = None):
+		frappe.get_doc({"doctype": "Event Check In", "ticket": ticket_id, "track": track}).insert().submit()
