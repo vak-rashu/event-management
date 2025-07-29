@@ -20,15 +20,19 @@ class EventBookingAttendee(Document):
 		currency: DF.Link
 		email: DF.Data
 		full_name: DF.Data
+		number_of_add_ons: DF.Int
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
 		ticket_type: DF.Link
-
 	# end: auto-generated types
+
 	def get_add_on_total(self):
 		if not self.add_ons:
 			return 0
 
 		add_ons = frappe.get_cached_doc("Attendee Ticket Add-on", self.add_ons).add_ons
 		return sum(r.price for r in add_ons)
+
+	def get_number_of_add_ons(self):
+		return len(frappe.get_cached_doc("Attendee Ticket Add-on", self.add_ons).add_ons)
