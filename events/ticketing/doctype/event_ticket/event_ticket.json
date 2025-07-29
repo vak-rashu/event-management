@@ -85,8 +85,13 @@
  "image_field": "qr_code",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2025-07-29 19:47:17.189495",
+ "links": [
+  {
+   "link_doctype": "Event Check In",
+   "link_fieldname": "ticket"
+  }
+ ],
+ "modified": "2025-07-29 20:06:34.850986",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",

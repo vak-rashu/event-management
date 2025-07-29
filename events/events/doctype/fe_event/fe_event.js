@@ -12,5 +12,19 @@ frappe.ui.form.on("FE Event", {
 			frm.set_value("is_published", !frm.doc.is_published);
 			frm.save();
 		});
+
+		frm.add_custom_button(__("Start Check In"), () => {
+			new frappe.ui.Scanner({
+				dialog: true, // open camera scanner in a dialog
+				multiple: false, // TODO: make multiple work (Danny says use a prev variable to avoid duplicate)
+				on_scan(data) {
+					const ticket_id = data.decodedText;
+					frm.call("check_in", { ticket_id }).then(() => {
+						frappe.show_alert(__("Check In Complete!"));
+						frm.refresh();
+					});
+				},
+			});
+		});
 	},
 });

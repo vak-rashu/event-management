@@ -1,7 +1,7 @@
 # Copyright (c) 2025, BWH Studios and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 
@@ -34,4 +34,6 @@ class FEEvent(Document):
 		venue: DF.Link | None
 	# end: auto-generated types
 
-	pass
+	@frappe.whitelist()
+	def check_in(self, ticket_id: str):
+		frappe.get_doc({"doctype": "Event Check In", "ticket": ticket_id}).insert().submit()
