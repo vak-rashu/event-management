@@ -48,11 +48,11 @@ def make_qr_image_with_data(data: str) -> bytes:
 
 	import qrcode
 	from qrcode.image.styledpil import StyledPilImage
-	from qrcode.image.styles.moduledrawers import HorizontalBarsDrawer
+	from qrcode.image.styles.moduledrawers.pil import HorizontalBarsDrawer
 
 	qr = qrcode.QRCode(
 		version=1,
-		error_correction=qrcode.constants.ERROR_CORRECT_L,
+		error_correction=qrcode.constants.ERROR_CORRECT_H,
 		box_size=10,
 		border=4,
 	)
