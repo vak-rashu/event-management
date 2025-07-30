@@ -10,8 +10,9 @@
   "booking",
   "column_break_sqmr",
   "ticket_type",
-  "add_ons",
   "qr_code",
+  "section_break_cgvb",
+  "add_ons",
   "section_break_yzvi",
   "amended_from"
  ],
@@ -79,6 +80,10 @@
    "fieldtype": "Table",
    "label": "Add Ons",
    "options": "Ticket Add-on Value"
+  },
+  {
+   "fieldname": "section_break_cgvb",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
@@ -91,7 +96,7 @@
    "link_fieldname": "ticket"
   }
  ],
- "modified": "2025-07-29 20:06:34.850986",
+ "modified": "2025-07-29 20:27:48.377260",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",
