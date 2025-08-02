@@ -41,5 +41,13 @@ frappe.ui.form.on("FE Event", {
 			frm.set_value("is_published", !frm.doc.is_published);
 			frm.save();
 		});
+
+		frm.set_query("track", "schedule", (doc, cdt, cdn) => {
+			return {
+				filters: {
+					event: doc.name,
+				},
+			};
+		});
 	},
 });
