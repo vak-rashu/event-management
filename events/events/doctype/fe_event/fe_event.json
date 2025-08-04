@@ -157,7 +157,8 @@
    "description": "Used by Frappe Builder",
    "fieldname": "route",
    "fieldtype": "Data",
-   "label": "Route"
+   "label": "Route",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
@@ -215,7 +216,7 @@
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-08-04 17:08:34.250058",
+ "modified": "2025-08-04 17:26:17.453554",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
