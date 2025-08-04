@@ -14,6 +14,13 @@ frappe.ui.form.on("FE Event", {
 					fieldname: "track",
 					fieldtype: "Link",
 					options: "Event Track",
+					get_query() {
+						return {
+							filters: {
+								event: frm.doc.name,
+							},
+						};
+					},
 				},
 				(values) => {
 					const track = values.track;
