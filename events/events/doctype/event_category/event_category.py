@@ -14,6 +14,8 @@ class EventCategory(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		enabled: DF.Check
+		icon_svg: DF.Code | None
 	# end: auto-generated types
 
 	pass

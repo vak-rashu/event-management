@@ -12,6 +12,8 @@ required_apps = ["frappe/payments"]
 
 export_python_type_annotations = True
 
+after_install = "events.install.after_install"
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
@@ -88,7 +90,6 @@ export_python_type_annotations = True
 # ------------
 
 # before_install = "events.install.before_install"
-# after_install = "events.install.after_install"
 
 # Uninstallation
 # ------------
