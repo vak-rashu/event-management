@@ -26,6 +26,7 @@ class FEEvent(Document):
 		medium: DF.Literal["In Person", "Online", "Hybrid"]
 		name: DF.Int | None
 		payment_gateway: DF.Link | None
+		route: DF.Data | None
 		schedule: DF.Table[ScheduleItem]
 		short_description: DF.SmallText | None
 		start_date: DF.Date
@@ -34,6 +35,13 @@ class FEEvent(Document):
 		title: DF.Data
 		venue: DF.Link | None
 	# end: auto-generated types
+
+	def validate(self):
+		self.validate_route()
+
+	def validate_route(self):
+		if self.is_published and not self.route:
+			self.route = frappe.website.utils.cleanup_page_name(self.title).replace("_", "-")
 
 	@frappe.whitelist()
 	def check_in(self, ticket_id: str, track: str | None = None):

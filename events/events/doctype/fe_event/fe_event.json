@@ -11,6 +11,7 @@
   "banner_image",
   "column_break_cxqh",
   "is_published",
+  "route",
   "medium",
   "venue",
   "host",
@@ -151,6 +152,12 @@
    "fieldtype": "Link",
    "label": "Payment Gateway",
    "options": "Payment Gateway"
+  },
+  {
+   "description": "Used by Frappe Builder",
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route"
   }
  ],
  "grid_page_length": 50,
@@ -208,7 +215,7 @@
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-07-31 19:59:50.478604",
+ "modified": "2025-08-04 17:08:34.250058",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
