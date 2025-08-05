@@ -167,7 +167,7 @@ after_install = "events.install.after_install"
 # Testing
 # -------
 
-# before_tests = "events.install.before_tests"
+before_tests = "events.install.before_tests"
 
 # Overriding Methods
 # ------------------------------

@@ -21,22 +21,7 @@ class IntegrationTestEventBooking(IntegrationTestCase):
 		TEST_ADD_ON_PRICE = 100
 		TEST_VIP_TICKET_TYPE_PRICE = 500
 
-		test_category = frappe.get_doc({"doctype": "Event Category", "name": "Test Category"}).insert()
-		test_venue = frappe.get_doc(
-			{"doctype": "Event Venue", "name": "Test Venue", "address": "test"}
-		).insert()
-		test_host = frappe.get_doc({"doctype": "Event Host", "name": "Test Host"}).insert()
-
-		test_event = frappe.get_doc(
-			{
-				"doctype": "FE Event",
-				"category": test_category.name,
-				"venue": test_venue.name,
-				"host": test_host.name,
-				"title": "Test Event",
-				"start_date": frappe.utils.today(),
-			}
-		).insert()
+		test_event = frappe.get_doc("FE Event", {"route": "test-route"})
 
 		test_ticket_add_on = frappe.get_doc(
 			{

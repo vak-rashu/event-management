@@ -1,6 +1,28 @@
 import frappe
 
 
+def before_tests():
+	setup_test_records()
+
+
+def setup_test_records():
+	test_category = frappe.get_doc({"doctype": "Event Category", "name": "Test Category"}).insert()
+	test_venue = frappe.get_doc({"doctype": "Event Venue", "name": "Test Venue", "address": "test"}).insert()
+	test_host = frappe.get_doc({"doctype": "Event Host", "name": "Test Host"}).insert()
+
+	frappe.get_doc(
+		{
+			"doctype": "FE Event",
+			"category": test_category.name,
+			"venue": test_venue.name,
+			"host": test_host.name,
+			"title": "Test Event",
+			"route": "test-route",
+			"start_date": frappe.utils.today(),
+		}
+	).insert()
+
+
 def after_install():
 	create_event_categories()
 
