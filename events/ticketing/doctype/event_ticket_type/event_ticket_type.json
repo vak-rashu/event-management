@@ -10,7 +10,10 @@
   "price",
   "currency",
   "column_break_lrao",
-  "event"
+  "event",
+  "is_published",
+  "auto_unpublish_on",
+  "max_tickets_available"
  ],
  "fields": [
   {
@@ -48,12 +51,31 @@
    "label": "Currency",
    "options": "Currency",
    "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_published",
+   "fieldtype": "Check",
+   "label": "Is Published?"
+  },
+  {
+   "description": "For Early Bird, etc.",
+   "fieldname": "auto_unpublish_on",
+   "fieldtype": "Date",
+   "label": "Auto Unpublish On"
+  },
+  {
+   "description": "Leave it 0 for no limit",
+   "fieldname": "max_tickets_available",
+   "fieldtype": "Int",
+   "label": "Max Tickets Available",
+   "non_negative": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-26 12:27:43.063022",
+ "modified": "2025-08-05 20:03:44.383790",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket Type",

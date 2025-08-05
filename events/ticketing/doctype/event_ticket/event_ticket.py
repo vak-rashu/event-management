@@ -4,6 +4,8 @@
 import frappe
 from frappe.model.document import Document
 
+from events.ticketing.doctype.event_ticket_type.event_ticket_type import EventTicketType
+
 
 class EventTicket(Document):
 	# begin: auto-generated types
@@ -20,13 +22,22 @@ class EventTicket(Document):
 		amended_from: DF.Link | None
 		attendee_name: DF.Data
 		booking: DF.Link | None
-		event: DF.Link
+		event: DF.Link | None
 		qr_code: DF.AttachImage | None
 		ticket_type: DF.Link
 	# end: auto-generated types
 
 	def before_submit(self):
+		self.validate_tickets_available()
 		self.generate_qr_code()
+
+	def validate_tickets_available(self):
+		ticket_type: EventTicketType = frappe.get_cached_doc("Event Ticket Type", self.ticket_type)
+		if ticket_type.max_tickets_available:
+			current_count = frappe.db.count("Event Ticket", {"ticket_type": self.ticket_type, "docstatus": 1})
+
+			if current_count >= ticket_type.max_tickets_available:
+				frappe.throw(frappe._("No more tickets available for this ticket type!"))
 
 	def generate_qr_code(self):
 		qr_data = make_qr_image_with_data(f"{self.name}")

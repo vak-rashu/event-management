@@ -6,10 +6,19 @@ def before_tests():
 
 
 def setup_test_records():
-	test_category = frappe.get_doc({"doctype": "Event Category", "name": "Test Category"}).insert()
-	test_venue = frappe.get_doc({"doctype": "Event Venue", "name": "Test Venue", "address": "test"}).insert()
-	test_host = frappe.get_doc({"doctype": "Event Host", "name": "Test Host"}).insert()
+	test_category = frappe.get_doc({"doctype": "Event Category", "name": "Test Category"}).insert(
+		ignore_if_duplicate=True
+	)
+	test_venue = frappe.get_doc({"doctype": "Event Venue", "name": "Test Venue", "address": "test"}).insert(
+		ignore_if_duplicate=True
+	)
+	test_host = frappe.get_doc({"doctype": "Event Host", "name": "Test Host"}).insert(
+		ignore_if_duplicate=True
+	)
 
+	test_event_exists = frappe.db.exists("FE Event", {"route": "test-route"})
+	if test_event_exists:
+		frappe.delete_doc("FE Event", test_event_exists, force=True)
 	frappe.get_doc(
 		{
 			"doctype": "FE Event",
@@ -20,7 +29,7 @@ def setup_test_records():
 			"route": "test-route",
 			"start_date": frappe.utils.today(),
 		}
-	).insert()
+	).insert(ignore_if_duplicate=True)
 
 
 def after_install():
