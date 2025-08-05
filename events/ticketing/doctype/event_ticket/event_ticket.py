@@ -32,7 +32,13 @@ class EventTicket(Document):
 		self.generate_qr_code()
 
 	def validate_tickets_available(self):
+		if "Event Manager" in frappe.get_roles():
+			return
+
 		ticket_type: EventTicketType = frappe.get_cached_doc("Event Ticket Type", self.ticket_type)
+		if not ticket_type.is_published:
+			frappe.throw(frappe._(f"{ticket_type.title} no longer available!"))
+
 		if ticket_type.max_tickets_available:
 			current_count = frappe.db.count("Event Ticket", {"ticket_type": self.ticket_type, "docstatus": 1})
 
