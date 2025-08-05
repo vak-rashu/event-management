@@ -12,7 +12,7 @@
   "column_break_lrao",
   "event",
   "is_published",
-  "auto_unpublish_on",
+  "auto_unpublish_after",
   "max_tickets_available"
  ],
  "fields": [
@@ -59,23 +59,23 @@
    "label": "Is Published?"
   },
   {
-   "description": "For Early Bird, etc.",
-   "fieldname": "auto_unpublish_on",
-   "fieldtype": "Date",
-   "label": "Auto Unpublish On"
-  },
-  {
    "description": "Leave it 0 for no limit",
    "fieldname": "max_tickets_available",
    "fieldtype": "Int",
    "label": "Max Tickets Available",
    "non_negative": 1
+  },
+  {
+   "description": "For Early Bird, etc.",
+   "fieldname": "auto_unpublish_after",
+   "fieldtype": "Date",
+   "label": "Auto Unpublish After"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 20:03:44.383790",
+ "modified": "2025-08-05 20:13:41.594775",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket Type",

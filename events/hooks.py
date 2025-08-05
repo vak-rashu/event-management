@@ -146,23 +146,7 @@ after_install = "events.install.after_install"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"events.tasks.all"
-# 	],
-# 	"daily": [
-# 		"events.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"events.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"events.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"events.tasks.monthly"
-# 	],
-# }
+scheduler_events = {"daily": ["events.tasks.unpublish_ticket_types_after_last_date"]}
 
 # Testing
 # -------

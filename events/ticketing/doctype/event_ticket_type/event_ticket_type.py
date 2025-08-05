@@ -14,7 +14,7 @@ class EventTicketType(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		auto_unpublish_on: DF.Date | None
+		auto_unpublish_after: DF.Date | None
 		currency: DF.Link
 		event: DF.Link
 		is_published: DF.Check
