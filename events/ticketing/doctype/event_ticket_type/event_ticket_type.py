@@ -30,9 +30,13 @@ class EventTicketType(Document):
 		return True
 
 	@property
+	def tickets_sold(self) -> int:
+		"""Returns the number of tickets sold for this ticket type."""
+		return frappe.db.count("Event Ticket", {"ticket_type": self.name, "docstatus": 1})
+
+	@property
 	def remaining_tickets(self) -> int:
 		"""Returns -1 if no limit, otherwise the number of remaining tickets."""
 		if not self.max_tickets_available:
 			return -1
-		current_count = frappe.db.count("Event Ticket", {"ticket_type": self.name, "docstatus": 1})
-		return self.max_tickets_available - current_count
+		return self.max_tickets_available - self.tickets_sold

@@ -13,7 +13,11 @@
   "event",
   "is_published",
   "auto_unpublish_after",
-  "max_tickets_available"
+  "max_tickets_available",
+  "stats_section",
+  "tickets_sold",
+  "column_break_ygut",
+  "remaining_tickets"
  ],
  "fields": [
   {
@@ -71,12 +75,39 @@
    "fieldname": "auto_unpublish_after",
    "fieldtype": "Date",
    "label": "Auto Unpublish After"
+  },
+  {
+   "fieldname": "stats_section",
+   "fieldtype": "Section Break",
+   "label": "Stats"
+  },
+  {
+   "description": "-1 if no limit defined above",
+   "fieldname": "remaining_tickets",
+   "fieldtype": "Int",
+   "is_virtual": 1,
+   "label": "Remaining Tickets"
+  },
+  {
+   "fieldname": "tickets_sold",
+   "fieldtype": "Int",
+   "is_virtual": 1,
+   "label": "Tickets Sold"
+  },
+  {
+   "fieldname": "column_break_ygut",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-08-08 14:44:20.080108",
+ "links": [
+  {
+   "link_doctype": "Event Ticket",
+   "link_fieldname": "ticket_type"
+  }
+ ],
+ "modified": "2025-08-08 15:37:29.303665",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket Type",
