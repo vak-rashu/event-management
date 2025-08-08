@@ -31,6 +31,7 @@ class EventBooking(Document):
 	def validate(self):
 		self.set_total()
 		self.set_currency()
+		self.validate_ticket_availability()
 
 	def set_currency(self):
 		self.currency = self.attendees[0].currency
@@ -43,6 +44,25 @@ class EventBooking(Document):
 				attendee.add_on_total = attendee.get_add_on_total()
 				attendee.number_of_add_ons = attendee.get_number_of_add_ons()
 				self.total_amount += attendee.add_on_total
+
+	def validate_ticket_availability(self):
+		num_tickets_by_type = {}
+		for attendee in self.attendees:
+			if attendee.ticket_type not in num_tickets_by_type:
+				num_tickets_by_type[attendee.ticket_type] = 0
+			num_tickets_by_type[attendee.ticket_type] += 1
+
+		for ticket_type, num_tickets in num_tickets_by_type.items():
+			ticket_type_doc = frappe.get_cached_doc("Event Ticket Type", ticket_type)
+			if not ticket_type_doc.is_published:
+				frappe.throw(frappe._(f"{ticket_type} tickets no longer available!"))
+
+			if not ticket_type_doc.are_tickets_available(num_tickets):
+				frappe.throw(
+					frappe._(
+						f"Only {ticket_type_doc.remaining_tickets} tickets available for {ticket_type}, you are trying to book {num_tickets}!"
+					)
+				)
 
 	def on_submit(self):
 		self.generate_tickets()

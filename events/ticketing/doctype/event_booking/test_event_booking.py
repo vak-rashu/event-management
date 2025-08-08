@@ -70,3 +70,95 @@ class IntegrationTestEventBooking(IntegrationTestCase):
 		self.assertEqual(test_booking.attendees[0].number_of_add_ons, 1)
 		self.assertEqual(test_booking.attendees[0].add_on_total, TEST_ADD_ON_PRICE)
 		self.assertEqual(test_booking.total_amount, 1100)
+
+	def test_prevents_booking_if_tickets_unavailable(self):
+		test_event = frappe.get_doc("FE Event", {"route": "test-route"})
+		test_vip_ticket_type = frappe.get_doc(
+			{
+				"doctype": "Event Ticket Type",
+				"event": test_event.name,
+				"title": "VIP",
+				"price": 500,
+				"is_published": True,
+				"max_tickets_available": 2,
+			}
+		).insert()
+
+		test_normal_ticket_type = frappe.get_doc(
+			{
+				"doctype": "Event Ticket Type",
+				"event": test_event.name,
+				"title": "Normal",
+				"price": 500,
+				"is_published": True,
+			}
+		).insert()
+
+		# VIP Ticket 1
+		frappe.get_doc(
+			{"doctype": "Event Ticket", "ticket_type": test_vip_ticket_type.name, "attendee_name": "John Doe"}
+		).insert().submit()
+
+		# VIP Ticket 2 with Normal Ticket 1
+		frappe.get_doc(
+			{
+				"doctype": "Event Booking",
+				"user": frappe.session.user,
+				"event": test_event.name,
+				"attendees": [
+					{
+						"full_name": "John Doe",
+						"ticket_type": test_vip_ticket_type.name,
+						"email": "john@email.com",
+					},
+					{
+						"full_name": "Jenny Doe",
+						"ticket_type": test_normal_ticket_type.name,
+						"email": "jenny@email.com",
+					},
+				],
+			}
+		).insert().submit()
+
+		# VIP Ticket 3 with Normal Ticket 2
+		with self.assertRaises(frappe.ValidationError):
+			frappe.get_doc(
+				{
+					"doctype": "Event Booking",
+					"user": frappe.session.user,
+					"event": test_event.name,
+					"attendees": [
+						{
+							"full_name": "John Doe",
+							"ticket_type": test_vip_ticket_type.name,
+							"email": "john@email.com",
+						},
+						{
+							"full_name": "John Doe",
+							"ticket_type": test_normal_ticket_type.name,
+							"email": "john@email.com",
+						},
+					],
+				}
+			).insert()
+
+		# Unpublish normal ticket type
+		test_normal_ticket_type.is_published = False
+		test_normal_ticket_type.save()
+
+		# Booking with unpublished ticket type
+		with self.assertRaises(frappe.ValidationError):
+			frappe.get_doc(
+				{
+					"doctype": "Event Booking",
+					"user": frappe.session.user,
+					"event": test_event.name,
+					"attendees": [
+						{
+							"full_name": "John Doe",
+							"ticket_type": test_normal_ticket_type.name,
+							"email": "john@email.com",
+						}
+					],
+				}
+			).insert()

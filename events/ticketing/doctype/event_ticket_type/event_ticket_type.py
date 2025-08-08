@@ -1,7 +1,7 @@
 # Copyright (c) 2025, BWH Studios and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 
@@ -24,4 +24,15 @@ class EventTicketType(Document):
 		title: DF.Data
 	# end: auto-generated types
 
-	pass
+	def are_tickets_available(self, num_tickets: int) -> bool:
+		if self.remaining_tickets != -1 and self.remaining_tickets < num_tickets:
+			return False
+		return True
+
+	@property
+	def remaining_tickets(self) -> int:
+		"""Returns -1 if no limit, otherwise the number of remaining tickets."""
+		if not self.max_tickets_available:
+			return -1
+		current_count = frappe.db.count("Event Ticket", {"ticket_type": self.name, "docstatus": 1})
+		return self.max_tickets_available - current_count
