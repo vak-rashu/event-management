@@ -66,6 +66,7 @@
    "non_negative": 1
   },
   {
+   "depends_on": "eval:doc.is_published",
    "description": "For Early Bird, etc.",
    "fieldname": "auto_unpublish_after",
    "fieldtype": "Date",
@@ -75,7 +76,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 20:13:41.594775",
+ "modified": "2025-08-08 14:44:20.080108",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket Type",
