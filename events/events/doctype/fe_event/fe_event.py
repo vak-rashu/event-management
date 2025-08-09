@@ -21,11 +21,13 @@ class FEEvent(Document):
 		category: DF.Link
 		end_date: DF.Date | None
 		end_time: DF.Time | None
+		external_registration_page: DF.Check
 		host: DF.Link
 		is_published: DF.Check
-		medium: DF.Literal["In Person", "Online", "Hybrid"]
+		medium: DF.Literal["In Person", "Online"]
 		name: DF.Int | None
 		payment_gateway: DF.Link | None
+		registration_url: DF.Data | None
 		route: DF.Data | None
 		schedule: DF.Table[ScheduleItem]
 		short_description: DF.SmallText | None

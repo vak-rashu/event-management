@@ -8,13 +8,11 @@
  "field_order": [
   "title",
   "category",
-  "banner_image",
-  "column_break_cxqh",
-  "is_published",
-  "route",
   "medium",
-  "venue",
+  "column_break_cxqh",
+  "banner_image",
   "host",
+  "venue",
   "section_break_naqe",
   "start_date",
   "start_time",
@@ -28,7 +26,13 @@
   "tab_2_tab",
   "schedule",
   "payments_tab",
-  "payment_gateway"
+  "payment_gateway",
+  "website_tab",
+  "is_published",
+  "route",
+  "column_break_ndtl",
+  "external_registration_page",
+  "registration_url"
  ],
  "fields": [
   {
@@ -68,7 +72,7 @@
    "fieldname": "medium",
    "fieldtype": "Select",
    "label": "Medium",
-   "options": "In Person\nOnline\nHybrid"
+   "options": "In Person\nOnline"
   },
   {
    "fieldname": "section_break_naqe",
@@ -159,6 +163,28 @@
    "fieldtype": "Data",
    "label": "Route",
    "unique": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "external_registration_page",
+   "fieldtype": "Check",
+   "label": "External Registration Page?"
+  },
+  {
+   "depends_on": "eval:doc.external_registration_page==1",
+   "fieldname": "registration_url",
+   "fieldtype": "Data",
+   "label": "Registration URL",
+   "mandatory_depends_on": "eval:doc.external_registration_page==1"
+  },
+  {
+   "fieldname": "website_tab",
+   "fieldtype": "Tab Break",
+   "label": "Website"
+  },
+  {
+   "fieldname": "column_break_ndtl",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
@@ -216,7 +242,7 @@
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-08-04 17:26:17.453554",
+ "modified": "2025-08-09 11:27:16.310547",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
