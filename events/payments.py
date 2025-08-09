@@ -19,7 +19,7 @@ def get_payment_link_for_booking(booking_id: str) -> str:
 	payment_gateway = get_payment_gateway_for_event(booking_doc.event)
 	user_full_name = frappe.get_cached_value("User", frappe.session.user, "full_name")
 
-	payment = record_payment(booking_id, booking_doc.total_amount, booking_doc.currency)
+	payment = record_payment(booking_id, booking_doc.total_amount, booking_doc.currency, payment_gateway)
 	controller = get_controller(payment_gateway)
 
 	# TODO
@@ -47,7 +47,7 @@ def get_payment_link_for_booking(booking_id: str) -> str:
 	return url
 
 
-def record_payment(booking_id: str, amount: float, currency: str):
+def record_payment(booking_id: str, amount: float, currency: str, payment_gateway: str | None = None):
 	payment_doc = frappe.new_doc("Event Payment")
 	payment_doc.update(
 		{
@@ -56,6 +56,7 @@ def record_payment(booking_id: str, amount: float, currency: str):
 			"currency": currency,
 			"reference_doctype": "Event Booking",
 			"reference_docname": booking_id,
+			"payment_gateway": payment_gateway,
 		}
 	)
 	payment_doc.save(ignore_permissions=True)
