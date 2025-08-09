@@ -20,6 +20,7 @@ class EventTicket(Document):
 
 		add_ons: DF.Table[TicketAddonValue]
 		amended_from: DF.Link | None
+		attendee_email: DF.Data | None
 		attendee_name: DF.Data
 		booking: DF.Link | None
 		event: DF.Link | None

@@ -74,6 +74,7 @@ class EventBooking(Document):
 			ticket.booking = self.name
 			ticket.ticket_type = attendee.ticket_type
 			ticket.attendee_name = attendee.full_name
+			ticket.attendee_email = attendee.email
 
 			if attendee.add_ons:
 				add_ons_list = frappe.get_cached_doc("Attendee Ticket Add-on", attendee.add_ons).add_ons

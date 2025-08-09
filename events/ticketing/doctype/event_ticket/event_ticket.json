@@ -9,6 +9,7 @@
   "event",
   "booking",
   "column_break_sqmr",
+  "attendee_email",
   "ticket_type",
   "qr_code",
   "section_break_cgvb",
@@ -84,6 +85,12 @@
   {
    "fieldname": "section_break_cgvb",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attendee_email",
+   "fieldtype": "Data",
+   "label": "Attendee Email",
+   "options": "Email"
   }
  ],
  "grid_page_length": 50,
@@ -96,7 +103,7 @@
    "link_fieldname": "ticket"
   }
  ],
- "modified": "2025-08-05 20:01:04.249039",
+ "modified": "2025-08-09 11:31:41.694737",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",
