@@ -79,6 +79,7 @@ class EventBooking(Document):
 			if attendee.add_ons:
 				add_ons_list = frappe.get_cached_doc("Attendee Ticket Add-on", attendee.add_ons).add_ons
 				ticket.add_ons = add_ons_list
+			ticket.flags.ignore_permissions = 1
 			ticket.insert().submit()
 
 	def on_payment_authorized(self, payment_status: str):
@@ -126,3 +127,4 @@ class EventBooking(Document):
 				self.submit()
 			except Exception:
 				frappe.log_error(frappe.get_traceback(), _("Booking Failed"))
+				frappe.throw(frappe._("Booking Failed! Please contact support."))
