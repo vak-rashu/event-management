@@ -9,16 +9,12 @@ def process_booking(attendees: list[dict], event: str, redirect_to: str = "/even
 	booking.event = event
 	booking.user = frappe.session.user
 	for attendee in attendees:
-		add_ons = None
-		for add_on in attendee.get("add_ons", []):
-			add_ons = frappe.get_doc(
-				{
-					"doctype": "Attendee Ticket Add-on",
-					"add_on": add_on["name"],
-					"attendee_name": attendee.get("full_name"),
-					"value": add_on["value"],
-				}
-			).insert(ignore_permissions=True)
+		add_ons = attendee.get("add_ons", None)
+		if add_ons:
+			add_ons = create_add_on_doc(
+				attendee_name=attendee["full_name"],
+				add_ons=add_ons,
+			)
 
 		booking.append(
 			"attendees",
@@ -34,3 +30,10 @@ def process_booking(attendees: list[dict], event: str, redirect_to: str = "/even
 	frappe.db.commit()
 
 	return get_payment_link_for_booking(booking.name, redirect_to=redirect_to)
+
+
+def create_add_on_doc(attendee_name: str, add_ons: list[dict]):
+	"""Create a new Attendee Ticket Add-on document."""
+	return frappe.get_doc(
+		{"doctype": "Attendee Ticket Add-on", "add_ons": add_ons, "attendee_name": attendee_name}
+	).insert(ignore_permissions=True)
