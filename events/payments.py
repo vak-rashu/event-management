@@ -13,7 +13,7 @@ def get_controller(payment_gateway):
 
 
 @frappe.whitelist()
-def get_payment_link_for_booking(booking_id: str) -> str:
+def get_payment_link_for_booking(booking_id: str, redirect_to: str = "/events") -> str:
 	booking_doc: EventBooking = frappe.get_cached_doc("Event Booking", booking_id)
 	event_title = frappe.get_cached_value("FE Event", booking_doc.event, "title")
 	payment_gateway = get_payment_gateway_for_event(booking_doc.event)
@@ -21,9 +21,6 @@ def get_payment_link_for_booking(booking_id: str) -> str:
 
 	payment = record_payment(booking_id, booking_doc.total_amount, booking_doc.currency, payment_gateway)
 	controller = get_controller(payment_gateway)
-
-	# TODO
-	redirect_to = "/app"
 
 	payment_details = {
 		"amount": booking_doc.total_amount,
