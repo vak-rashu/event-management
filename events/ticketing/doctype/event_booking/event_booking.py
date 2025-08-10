@@ -122,6 +122,7 @@ class EventBooking(Document):
 
 			try:
 				# submit the booking
+				self.flags.ignore_permissions = 1
 				self.submit()
 			except Exception:
 				frappe.log_error(frappe.get_traceback(), _("Booking Failed"))
