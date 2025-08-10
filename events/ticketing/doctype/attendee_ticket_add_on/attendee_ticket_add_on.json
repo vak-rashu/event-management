@@ -5,8 +5,6 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "attendee",
-  "column_break_mzfc",
   "attendee_name",
   "section_break_rejz",
   "add_ons"
@@ -19,20 +17,8 @@
    "options": "Ticket Add-on Value"
   },
   {
-   "fieldname": "attendee",
-   "fieldtype": "Link",
-   "label": "Attendee",
-   "options": "Event Booking Attendee",
-   "read_only": 1,
-   "unique": 1
-  },
-  {
    "fieldname": "section_break_rejz",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_mzfc",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "attendee.full_name",
@@ -45,7 +31,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-30 19:27:26.050789",
+ "modified": "2025-08-10 14:17:52.755675",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Attendee Ticket Add-on",

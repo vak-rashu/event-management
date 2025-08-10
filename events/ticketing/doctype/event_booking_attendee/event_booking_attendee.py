@@ -30,12 +30,8 @@ class EventBookingAttendee(Document):
 	def get_add_on_total(self):
 		if not self.add_ons:
 			return 0
-
 		doc = frappe.get_cached_doc("Attendee Ticket Add-on", self.add_ons)
 		add_ons = doc.add_ons
-		if self.name:
-			doc.attendee = self.name
-			doc.save()
 		return sum(r.price for r in add_ons)
 
 	def get_number_of_add_ons(self):
