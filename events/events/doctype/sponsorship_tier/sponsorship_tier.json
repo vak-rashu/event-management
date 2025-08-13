@@ -6,8 +6,10 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
+  "event",
   "column_break_vmpf",
-  "event"
+  "price",
+  "currency"
  ],
  "fields": [
   {
@@ -27,12 +29,26 @@
   {
    "fieldname": "column_break_vmpf",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "label": "Price",
+   "non_negative": 1,
+   "options": "currency"
+  },
+  {
+   "default": "INR",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-26 12:24:03.553848",
+ "modified": "2025-08-13 19:47:30.851050",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "Sponsorship Tier",

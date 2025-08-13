@@ -14,11 +14,14 @@
  ],
  "fields": [
   {
-   "default": "Review Pending",
+   "default": "Pending",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Status",
-   "options": "Review Pending\nAccepted\nRejected\nWithdrawn"
+   "options": "Pending\nPaid\nWithdrawn"
   },
   {
    "fieldname": "company_name",
@@ -40,9 +43,10 @@
   {
    "fieldname": "tier",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Tier",
-   "options": "Sponsorship Tier",
-   "reqd": 1
+   "options": "Sponsorship Tier"
   },
   {
    "fieldname": "event",
@@ -55,11 +59,20 @@
  "grid_page_length": 50,
  "image_field": "company_logo",
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-07-26 12:20:24.444309",
+ "links": [
+  {
+   "link_doctype": "Event Sponsor",
+   "link_fieldname": "enquiry"
+  },
+  {
+   "link_doctype": "Event Payment",
+   "link_fieldname": "reference_docname"
+  }
+ ],
+ "modified": "2025-08-13 21:14:37.629364",
  "modified_by": "Administrator",
  "module": "Proposals",
- "name": "Sponsorship Proposal",
+ "name": "Sponsorship Enquiry",
  "owner": "Administrator",
  "permissions": [
   {

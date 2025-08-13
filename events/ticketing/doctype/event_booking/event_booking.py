@@ -6,6 +6,8 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
+from events.payments import mark_payment_as_received
+
 
 class EventBooking(Document):
 	# begin: auto-generated types
@@ -88,43 +90,10 @@ class EventBooking(Document):
 			self.update_payment_record()
 
 	def update_payment_record(self):
-		request = frappe.get_all(
-			"Integration Request",
-			{
-				"reference_doctype": "Event Booking",
-				"reference_docname": self.name,
-				"owner": frappe.session.user,
-			},
-			order_by="creation desc",
-			limit=1,
-		)
-
-		if len(request):
-			data = frappe.db.get_value("Integration Request", request[0].name, "data")
-			data = frappe._dict(json.loads(data))
-
-			payment_gateway = data.get("payment_gateway")
-			if payment_gateway == "Razorpay":
-				payment_id = "razorpay_payment_id"
-			elif "Stripe" in payment_gateway:
-				payment_id = "stripe_token_id"
-			else:
-				payment_id = "order_id"
-
-			frappe.db.set_value(
-				"Event Payment",
-				data.payment,
-				{
-					"payment_received": 1,
-					"payment_id": data.get(payment_id),
-					"order_id": data.get("order_id"),
-				},
-			)
-
-			try:
-				# submit the booking
-				self.flags.ignore_permissions = 1
-				self.submit()
-			except Exception:
-				frappe.log_error(frappe.get_traceback(), _("Booking Failed"))
-				frappe.throw(frappe._("Booking Failed! Please contact support."))
+		try:
+			mark_payment_as_received(self.doctype, self.name)
+			self.flags.ignore_permissions = 1
+			self.submit()
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), _("Booking Failed"))
+			frappe.throw(frappe._("Booking Failed! Please contact support."))

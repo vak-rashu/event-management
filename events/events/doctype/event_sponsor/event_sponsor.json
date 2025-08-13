@@ -6,18 +6,14 @@
  "engine": "InnoDB",
  "field_order": [
   "company_name",
-  "logo",
+  "company_logo",
   "column_break_ozou",
   "event",
-  "tier"
+  "tier",
+  "additional_section",
+  "enquiry"
  ],
  "fields": [
-  {
-   "fieldname": "logo",
-   "fieldtype": "Attach Image",
-   "label": "Logo",
-   "reqd": 1
-  },
   {
    "fieldname": "column_break_ozou",
    "fieldtype": "Column Break"
@@ -42,13 +38,30 @@
    "label": "Tier",
    "options": "Sponsorship Tier",
    "reqd": 1
+  },
+  {
+   "fieldname": "company_logo",
+   "fieldtype": "Attach Image",
+   "label": "Company Logo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "additional_section",
+   "fieldtype": "Section Break",
+   "label": "Additional"
+  },
+  {
+   "fieldname": "enquiry",
+   "fieldtype": "Link",
+   "label": "Enquiry",
+   "options": "Sponsorship Enquiry"
   }
  ],
  "grid_page_length": 50,
- "image_field": "logo",
+ "image_field": "company_logo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-29 19:34:00.135636",
+ "modified": "2025-08-13 21:10:52.146454",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "Event Sponsor",
@@ -82,8 +95,10 @@
  ],
  "quick_entry": 1,
  "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "company_name",
  "track_changes": 1
 }

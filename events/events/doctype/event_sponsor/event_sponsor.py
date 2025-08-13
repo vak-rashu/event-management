@@ -14,9 +14,10 @@ class EventSponsor(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		company_logo: DF.AttachImage
 		company_name: DF.Data
+		enquiry: DF.Link | None
 		event: DF.Link
-		logo: DF.AttachImage
 		tier: DF.Link
 	# end: auto-generated types
 
