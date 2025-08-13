@@ -7,6 +7,10 @@ frappe.ui.form.on("FE Event", {
 			frm.fields_dict.time_zone.set_data(message.all_timezones);
 		});
 
+		if (frm.doc.route && frm.doc.is_published) {
+			frm.add_web_link(`/events/${frm.doc.route}`);
+		}
+
 		frm.add_custom_button(__("Start Check In"), () => {
 			frappe.prompt(
 				{
