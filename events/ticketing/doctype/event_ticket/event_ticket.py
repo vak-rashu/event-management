@@ -20,30 +20,26 @@ class EventTicket(Document):
 
 		add_ons: DF.Table[TicketAddonValue]
 		amended_from: DF.Link | None
-		attendee_email: DF.Data | None
+		attendee_email: DF.Data
 		attendee_name: DF.Data
 		booking: DF.Link | None
+		coupon_used: DF.Link | None
 		event: DF.Link | None
 		qr_code: DF.AttachImage | None
 		ticket_type: DF.Link
 	# end: auto-generated types
 
 	def before_submit(self):
+		self.validate_coupon_usage()
 		self.generate_qr_code()
 
-	def validate_tickets_available(self):
-		if "Event Manager" in frappe.get_roles():
+	def validate_coupon_usage(self):
+		if not self.coupon_used:
 			return
 
-		ticket_type: EventTicketType = frappe.get_cached_doc("Event Ticket Type", self.ticket_type)
-		if not ticket_type.is_published:
-			frappe.throw(frappe._(f"{ticket_type.title} no longer available!"))
-
-		if ticket_type.max_tickets_available:
-			current_count = frappe.db.count("Event Ticket", {"ticket_type": self.ticket_type, "docstatus": 1})
-
-			if current_count >= ticket_type.max_tickets_available:
-				frappe.throw(frappe._("No more tickets available for this ticket type!"))
+		coupon = frappe.get_cached_doc("Bulk Ticket Coupon", self.coupon_used)
+		if coupon.is_used_up():
+			frappe.throw(frappe._("Coupon has been already used up maximum number of times!"))
 
 	def generate_qr_code(self):
 		qr_data = make_qr_image_with_data(f"{self.name}")

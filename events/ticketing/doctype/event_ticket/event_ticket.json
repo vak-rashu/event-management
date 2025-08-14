@@ -8,6 +8,7 @@
   "attendee_name",
   "event",
   "booking",
+  "coupon_used",
   "column_break_sqmr",
   "attendee_email",
   "ticket_type",
@@ -90,7 +91,14 @@
    "fieldname": "attendee_email",
    "fieldtype": "Data",
    "label": "Attendee Email",
-   "options": "Email"
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "coupon_used",
+   "fieldtype": "Link",
+   "label": "Coupon Used ",
+   "options": "Bulk Ticket Coupon"
   }
  ],
  "grid_page_length": 50,
@@ -103,7 +111,7 @@
    "link_fieldname": "ticket"
   }
  ],
- "modified": "2025-08-09 11:31:41.694737",
+ "modified": "2025-08-14 17:50:05.912640",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",
