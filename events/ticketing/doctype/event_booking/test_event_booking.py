@@ -96,7 +96,12 @@ class IntegrationTestEventBooking(IntegrationTestCase):
 
 		# VIP Ticket 1
 		frappe.get_doc(
-			{"doctype": "Event Ticket", "ticket_type": test_vip_ticket_type.name, "attendee_name": "John Doe"}
+			{
+				"doctype": "Event Ticket",
+				"ticket_type": test_vip_ticket_type.name,
+				"attendee_name": "John Doe",
+				"attendee_email": "john@email.com",
+			}
 		).insert().submit()
 
 		# VIP Ticket 2 with Normal Ticket 1
