@@ -31,7 +31,11 @@
 			<!-- Right Side: Summary and Submit -->
 			<div class="lg:col-span-1">
 				<div class="sticky top-4">
-					<BookingSummary :summary="summary" :total="total" />
+					<BookingSummary
+						:summary="summary"
+						:total="total"
+						:total-currency="totalCurrency"
+					/>
 					<Button
 						variant="solid"
 						size="lg"
@@ -120,30 +124,34 @@ const summary = computed(() => {
 	for (const attendee of attendees.value) {
 		const ticketType = attendee.ticket_type;
 		if (ticketType && ticketTypesMap.value[ticketType]) {
+			const ticketInfo = ticketTypesMap.value[ticketType];
 			if (!summaryData.tickets[ticketType]) {
 				summaryData.tickets[ticketType] = {
 					count: 0,
 					amount: 0,
-					price: ticketTypesMap.value[ticketType].price,
-					title: ticketTypesMap.value[ticketType].title,
+					price: ticketInfo.price,
+					title: ticketInfo.title,
+					currency: ticketInfo.currency,
 				};
 			}
 			summaryData.tickets[ticketType].count++;
-			summaryData.tickets[ticketType].amount += ticketTypesMap.value[ticketType].price;
+			summaryData.tickets[ticketType].amount += ticketInfo.price;
 		}
 
 		for (const addOnName in attendee.add_ons) {
 			if (attendee.add_ons[addOnName].selected) {
+				const addOnInfo = addOnsMap.value[addOnName];
 				if (!summaryData.add_ons[addOnName]) {
 					summaryData.add_ons[addOnName] = {
 						count: 0,
 						amount: 0,
-						price: addOnsMap.value[addOnName].price,
-						title: addOnsMap.value[addOnName].title,
+						price: addOnInfo.price,
+						title: addOnInfo.title,
+						currency: addOnInfo.currency,
 					};
 				}
 				summaryData.add_ons[addOnName].count++;
-				summaryData.add_ons[addOnName].amount += addOnsMap.value[addOnName].price;
+				summaryData.add_ons[addOnName].amount += addOnInfo.price;
 			}
 		}
 	}
@@ -159,6 +167,12 @@ const total = computed(() => {
 		currentTotal += summary.value.add_ons[key].amount;
 	}
 	return currentTotal;
+});
+
+// Determine the primary currency for the total (use the first ticket type's currency)
+const totalCurrency = computed(() => {
+	const firstTicket = Object.values(summary.value.tickets)[0];
+	return firstTicket ? firstTicket.currency : "INR";
 });
 
 // --- WATCHER ---

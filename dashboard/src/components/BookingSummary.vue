@@ -11,8 +11,11 @@
 				:key="name"
 				class="flex justify-between items-center text-gray-600 mb-1"
 			>
-				<span>{{ ticket.title }} ({{ ticket.count }} x ₹{{ ticket.price }})</span>
-				<span class="font-medium">₹{{ ticket.amount.toFixed(2) }}</span>
+				<span
+					>{{ ticket.title }} ({{ ticket.count }} x
+					{{ formatPrice(ticket.price, ticket.currency) }})</span
+				>
+				<span class="font-medium">{{ formatPrice(ticket.amount, ticket.currency) }}</span>
 			</div>
 		</div>
 
@@ -24,8 +27,11 @@
 				:key="name"
 				class="flex justify-between items-center text-gray-600 mb-1"
 			>
-				<span>{{ addOn.title }} ({{ addOn.count }} x ₹{{ addOn.price }})</span>
-				<span class="font-medium">₹{{ addOn.amount.toFixed(2) }}</span>
+				<span
+					>{{ addOn.title }} ({{ addOn.count }} x
+					{{ formatPrice(addOn.price, addOn.currency) }})</span
+				>
+				<span class="font-medium">{{ formatPrice(addOn.amount, addOn.currency) }}</span>
 			</div>
 		</div>
 
@@ -34,12 +40,14 @@
 		<!-- Total Section -->
 		<div class="flex justify-between items-center text-xl font-bold text-gray-900">
 			<h3>Total</h3>
-			<span>₹{{ total.toFixed(2) }}</span>
+			<span>{{ formatPrice(total, totalCurrency) }}</span>
 		</div>
 	</div>
 </template>
 
 <script setup>
+import { formatPrice } from "../utils/currency.js";
+
 defineProps({
 	summary: {
 		type: Object,
@@ -48,6 +56,10 @@ defineProps({
 	total: {
 		type: Number,
 		required: true,
+	},
+	totalCurrency: {
+		type: String,
+		default: "INR",
 	},
 });
 </script>

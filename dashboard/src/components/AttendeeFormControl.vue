@@ -44,7 +44,7 @@
 				type="select"
 				:options="
 					availableTicketTypes.map((tt) => ({
-						label: `${tt.title} (₹${tt.price})`,
+						label: `${tt.title} (${formatPrice(tt.price, tt.currency)})`,
 						value: tt.name,
 					}))
 				"
@@ -60,7 +60,7 @@
 						type="checkbox"
 						v-model="attendee.add_ons[addOn.name].selected"
 						:id="`add_on_${addOn.name}_${index}`"
-						:label="`${addOn.title} (₹${addOn.price})`"
+						:label="`${addOn.title} (${formatPrice(addOn.price, addOn.currency)})`"
 					/>
 				</div>
 
@@ -84,6 +84,8 @@
 
 <script setup>
 import { Tooltip } from "frappe-ui";
+import { formatPrice } from "../utils/currency.js";
+
 defineProps({
 	attendee: { type: Object, required: true },
 	index: { type: Number, required: true },
