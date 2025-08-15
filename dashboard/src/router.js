@@ -12,7 +12,7 @@ const routes = [
 		path: "/book-tickets/:eventRoute",
 		props: true,
 		name: "event-booking",
-		component: () => import("@/pages/EventBooking.vue"),
+		component: () => import("@/pages/BookTickets.vue"),
 	},
 	{
 		path: "/bookings",

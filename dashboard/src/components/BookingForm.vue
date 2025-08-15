@@ -49,6 +49,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
+import { useStorage } from "@vueuse/core";
 import AttendeeFormControl from "./AttendeeFormControl.vue";
 import BookingSummary from "./BookingSummary.vue";
 import { createResource } from "frappe-ui";
@@ -66,8 +67,9 @@ const props = defineProps({
 });
 
 // --- STATE ---
-const attendees = ref([]);
-const attendeeIdCounter = ref(0);
+// Use localStorage to persist attendees data across page refreshes
+const attendees = useStorage("event-booking-attendees", []);
+const attendeeIdCounter = useStorage("event-booking-counter", 0);
 
 // --- HELPERS / DERIVED STATE ---
 const addOnsMap = computed(() =>
@@ -103,6 +105,12 @@ const addAttendee = () => {
 
 const removeAttendee = (index) => {
 	attendees.value.splice(index, 1);
+};
+
+// Clear stored data (useful after successful booking)
+const clearStoredData = () => {
+	attendees.value = [];
+	attendeeIdCounter.value = 0;
 };
 
 // --- COMPUTED PROPERTIES FOR SUMMARY ---
@@ -154,7 +162,7 @@ const total = computed(() => {
 });
 
 // --- WATCHER ---
-// Initialize with one attendee when component mounts
+// Initialize with one attendee when component mounts (only if no data in storage)
 watch(
 	() => props.availableTicketTypes,
 	() => {
@@ -197,6 +205,8 @@ async function submit() {
 
 	processBooking.submit(final_payload, {
 		onSuccess: (data) => {
+			// Clear stored data after successful booking
+			clearStoredData();
 			window.location.href = data;
 		},
 	});
