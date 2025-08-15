@@ -1,0 +1,23 @@
+{
+  "name": "events",
+  "version": "1.0.0",
+  "description": "Event Management App built on Frappe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd dashboard && yarn install",
+    "dev": "cd dashboard && yarn dev",
+    "build": "cd dashboard && yarn build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BuildWithHussain/events.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BuildWithHussain/events/issues"
+  },
+  "homepage": "https://github.com/BuildWithHussain/events#readme"
+}
