@@ -1,7 +1,25 @@
 <!-- AttendeeCard.vue -->
 <template>
-	<div class="bg-white border border-gray-300 rounded-xl p-4 md:p-6 mb-6 shadow-sm">
-		<h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+	<div class="bg-white border border-gray-300 rounded-xl p-4 md:p-6 mb-6 shadow-sm relative">
+		<!-- Remove Button -->
+		<button
+			v-if="showRemove"
+			@click="$emit('remove')"
+			type="button"
+			class="absolute top-4 right-4 bg-red-100 hover:bg-red-200 text-red-600 rounded-full p-2 transition-colors duration-200"
+			title="Remove attendee"
+		>
+			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
+			</svg>
+		</button>
+
+		<h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2 pr-10">
 			Attendee {{ index + 1 }}
 		</h4>
 
@@ -75,5 +93,8 @@ defineProps({
 	index: { type: Number, required: true },
 	availableTicketTypes: { type: Array, required: true },
 	availableAddOns: { type: Array, required: true },
+	showRemove: { type: Boolean, default: false },
 });
+
+defineEmits(["remove"]);
 </script>

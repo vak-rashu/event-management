@@ -4,23 +4,28 @@
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 			<!-- Left Side: Form Inputs -->
 			<div class="lg:col-span-2">
-				<div class="bg-white p-6 rounded-lg shadow-md mb-6">
-					<FormControl
-						v-model.number="numAttendees"
-						label="Number of Attendees"
-						type="number"
-						:min="1"
-					/>
-				</div>
-
 				<AttendeeFormControl
 					v-for="(attendee, index) in attendees"
-					:key="index"
+					:key="attendee.id"
 					:attendee="attendee"
 					:index="index"
 					:available-ticket-types="availableTicketTypes"
 					:available-add-ons="availableAddOns"
+					:show-remove="attendees.length > 1"
+					@remove="removeAttendee(index)"
 				/>
+
+				<!-- Add Attendee Button -->
+				<div class="text-center mt-6">
+					<Button
+						variant="outline"
+						size="lg"
+						@click="addAttendee"
+						class="w-full max-w-md border-dashed border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 py-4"
+					>
+						+ Add Another Attendee
+					</Button>
+				</div>
 			</div>
 
 			<!-- Right Side: Summary and Submit -->
@@ -61,8 +66,8 @@ const props = defineProps({
 });
 
 // --- STATE ---
-const numAttendees = ref(1);
 const attendees = ref([]);
+const attendeeIdCounter = ref(0);
 
 // --- HELPERS / DERIVED STATE ---
 const addOnsMap = computed(() =>
@@ -75,7 +80,9 @@ const eventId = computed(() => props.availableTicketTypes[0]?.event || null);
 
 // --- METHODS ---
 const createNewAttendee = () => {
+	attendeeIdCounter.value++;
 	const newAttendee = {
+		id: attendeeIdCounter.value,
 		full_name: "",
 		email: "",
 		ticket_type: props.availableTicketTypes[0]?.name || "",
@@ -88,6 +95,14 @@ const createNewAttendee = () => {
 		};
 	}
 	return newAttendee;
+};
+
+const addAttendee = () => {
+	attendees.value.push(createNewAttendee());
+};
+
+const removeAttendee = (index) => {
+	attendees.value.splice(index, 1);
 };
 
 // --- COMPUTED PROPERTIES FOR SUMMARY ---
@@ -139,16 +154,12 @@ const total = computed(() => {
 });
 
 // --- WATCHER ---
+// Initialize with one attendee when component mounts
 watch(
-	numAttendees,
-	(newCount) => {
-		const currentCount = attendees.value.length;
-		if (newCount > currentCount) {
-			for (let i = currentCount; i < newCount; i++) {
-				attendees.value.push(createNewAttendee());
-			}
-		} else if (newCount < currentCount) {
-			attendees.value.splice(newCount);
+	() => props.availableTicketTypes,
+	() => {
+		if (attendees.value.length === 0 && props.availableTicketTypes.length > 0) {
+			attendees.value.push(createNewAttendee());
 		}
 	},
 	{ immediate: true }
