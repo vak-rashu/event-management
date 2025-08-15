@@ -1,6 +1,6 @@
 <!-- BookingForm.vue -->
 <template>
-	<form @submit.prevent="submit" class="max-w-7xl mx-auto p-4">
+	<form @submit.prevent="submit">
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 			<!-- Left Side: Form Inputs -->
 			<div class="lg:col-span-2">
