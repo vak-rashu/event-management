@@ -14,6 +14,17 @@ const routes = [
 		name: "event-booking",
 		component: () => import("@/pages/EventBooking.vue"),
 	},
+	{
+		path: "/bookings",
+		name: "bookings-list",
+		component: () => import("@/pages/BookingsList.vue"),
+	},
+	{
+		path: "/bookings/:bookingId",
+		props: true,
+		name: "booking-details",
+		component: () => import("@/pages/BookingDetails.vue"),
+	},
 ];
 
 const router = createRouter({

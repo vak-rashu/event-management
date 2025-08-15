@@ -1,14 +1,7 @@
-<template></template>
+<template>
+	<RouterLink :to="{ name: 'bookings-list' }" class="text-ink-blue-3 hover:underline mb-4">
+		My Bookings
+	</RouterLink>
+</template>
 
-<script setup>
-import { createResource } from "frappe-ui";
-import { ref } from "vue";
-import { session } from "../data/session";
-
-const ping = createResource({
-	url: "ping",
-	auto: true,
-});
-
-const showDialog = ref(false);
-</script>
+<script setup></script>
