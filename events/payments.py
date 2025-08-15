@@ -21,6 +21,7 @@ def get_payment_link_for_booking(booking_id: str, redirect_to: str = "/events") 
 		booking_doc.total_amount,
 		booking_doc.currency,
 		payment_gateway,
+		redirect_to=redirect_to,
 		title=f"Payment for {event_title}",
 	)
 
