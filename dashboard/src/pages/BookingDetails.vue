@@ -11,32 +11,43 @@
 
 	<div v-else-if="booking.doc && tickets.list.data">
 		<!-- Success Message (only shown on payment success) -->
-		<div
-			v-if="showSuccessMessage"
-			class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
+		<Transition
+			name="success-message"
+			enter-active-class="transition-all duration-500 ease-out"
+			leave-active-class="transition-all duration-500 ease-in"
+			enter-from-class="opacity-0 transform -translate-y-4 scale-95"
+			enter-to-class="opacity-100 transform translate-y-0 scale-100"
+			leave-from-class="opacity-100 transform translate-y-0 scale-100"
+			leave-to-class="opacity-0 transform -translate-y-4 scale-95"
 		>
-			<div class="flex items-center">
-				<svg
-					class="w-6 h-6 text-green-600 mr-3"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
-				<div>
-					<h3 class="text-green-800 font-semibold">Payment Successful! 🎉</h3>
-					<p class="text-green-700">
-						Your booking has been confirmed. Check your email for tickets and details.
-					</p>
+			<div
+				v-if="showSuccessMessage"
+				class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
+			>
+				<div class="flex items-center">
+					<svg
+						class="w-6 h-6 text-green-600 mr-3"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<div>
+						<h3 class="text-green-800 font-semibold">Payment Successful! 🎉</h3>
+						<p class="text-green-700">
+							Your booking has been confirmed. Check your email for tickets and
+							details.
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</Transition>
 
 		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">
 			Booking Details <span class="text-ink-gray-5 font-mono">(#{{ bookingId }})</span>
