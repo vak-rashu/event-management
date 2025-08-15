@@ -5,18 +5,11 @@
 			<!-- Left Side: Form Inputs -->
 			<div class="lg:col-span-2">
 				<div class="bg-white p-6 rounded-lg shadow-md mb-6">
-					<label
-						for="num_attendees"
-						class="block mb-1 text-sm font-medium text-gray-700"
-					>
-						Number of Attendees
-					</label>
-					<input
-						id="num_attendees"
-						min="1"
+					<FormControl
 						v-model.number="numAttendees"
+						label="Number of Attendees"
 						type="number"
-						class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+						:min="1"
 					/>
 				</div>
 
@@ -34,13 +27,15 @@
 			<div class="lg:col-span-1">
 				<div class="sticky top-4">
 					<BookingSummary :summary="summary" :total="total" />
-					<button
+					<Button
+						variant="solid"
+						size="lg"
+						class="w-full mt-3"
 						type="submit"
-						:disabled="submitting"
-						class="w-full mt-6 py-3 px-4 text-lg font-semibold bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+						:loading="processBooking.loading"
 					>
-						{{ submitting ? "Processing..." : "Submit Booking" }}
-					</button>
+						{{ processBooking.loading ? "Processing..." : "Submit Booking" }}
+					</Button>
 				</div>
 			</div>
 		</div>
@@ -51,6 +46,7 @@
 import { ref, computed, watch } from "vue";
 import AttendeeFormControl from "./AttendeeFormControl.vue";
 import BookingSummary from "./BookingSummary.vue";
+import { createResource } from "frappe-ui";
 
 // Props are passed from the parent context (e.g., your main app or page)
 const props = defineProps({
@@ -67,7 +63,6 @@ const props = defineProps({
 // --- STATE ---
 const numAttendees = ref(1);
 const attendees = ref([]);
-const submitting = ref(false);
 
 // --- HELPERS / DERIVED STATE ---
 const addOnsMap = computed(() =>
@@ -159,10 +154,13 @@ watch(
 	{ immediate: true }
 );
 
+const processBooking = createResource({
+	url: "events.api.process_booking",
+});
+
 // --- FORM SUBMISSION ---
 async function submit() {
-	if (submitting.value) return;
-	submitting.value = true;
+	if (processBooking.loading) return;
 
 	const attendees_payload = attendees.value.map((attendee) => {
 		const cleanAttendee = JSON.parse(JSON.stringify(attendee));
@@ -183,34 +181,13 @@ async function submit() {
 	const final_payload = {
 		event: eventId.value,
 		attendees: attendees_payload,
-		redirect_to: "/booking-confirmation",
+		redirect_to: "/dashboard/bookings",
 	};
 
-	try {
-		const response = await fetch("/api/v2/method/events.api.process_booking", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				"X-Frappe-CSRF-Token": window.frappe?.csrf_token || "",
-			},
-			body: JSON.stringify(final_payload),
-		});
-
-		if (!response.ok) {
-			const errorData = await response.json();
-			const errorMessage =
-				JSON.parse(errorData.errors || "[]")[0] || "An unknown error occurred.";
-			alert(errorMessage);
-		} else {
-			const { data } = await response.json();
+	processBooking.submit(final_payload, {
+		onSuccess: (data) => {
 			window.location.href = data;
-		}
-	} catch (error) {
-		console.error("Submission failed:", error);
-		alert("Could not connect to the server. Please try again later.");
-	} finally {
-		submitting.value = false;
-	}
+		},
+	});
 }
 </script>
