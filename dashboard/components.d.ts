@@ -8,6 +8,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AttendeeFormControl: typeof import('./src/components/AttendeeFormControl.vue')['default']
+    BookingForm: typeof import('./src/components/BookingForm.vue')['default']
+    BookingSummary: typeof import('./src/components/BookingSummary.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

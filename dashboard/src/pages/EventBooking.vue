@@ -1,0 +1,51 @@
+<template>
+	<div>
+		<div class="w-8">
+			<Spinner v-if="eventBookingResource.loading" />
+		</div>
+		<BookingForm
+			v-if="eventBookingData.availableAddOns && eventBookingData.availableTicketTypes"
+			:availableAddOns="eventBookingData.availableAddOns"
+			:availableTicketTypes="eventBookingData.availableTicketTypes"
+		/>
+	</div>
+</template>
+
+<script setup>
+import { reactive } from "vue";
+import BookingForm from "../components/BookingForm.vue";
+import { Spinner, createResource } from "frappe-ui";
+
+const eventBookingData = reactive({
+	availableAddOns: null,
+	availableTicketTypes: null,
+});
+
+const props = defineProps({
+	eventRoute: {
+		type: String,
+		required: true,
+	},
+});
+
+const eventBookingResource = createResource({
+	url: "events.api.get_event_booking_data",
+	params: {
+		event_route: props.eventRoute,
+	},
+	auto: true,
+	onSuccess: (data) => {
+		eventBookingData.availableAddOns = data.available_add_ons || [];
+		eventBookingData.availableTicketTypes = data.available_ticket_types || [];
+	},
+	onError: (error) => {
+		if (error.message.includes("DoesNotExistError")) {
+			console.error("Event not found:", error);
+			// Optionally, redirect to a 404 page or show a message
+			alert("Event not found. Please check the event URL.");
+		} else {
+			console.error("Error loading event booking data:", error);
+		}
+	},
+});
+</script>

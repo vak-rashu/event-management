@@ -5,13 +5,14 @@ import { session } from "./data/session";
 const routes = [
 	{
 		path: "/",
-		name: "Home",
-		component: () => import("@/pages/Home.vue"),
+		name: "dashboard",
+		component: () => import("@/pages/Dashboard.vue"),
 	},
 	{
-		name: "Login",
-		path: "/account/login",
-		component: () => import("@/pages/Login.vue"),
+		path: "/book-tickets/:eventRoute",
+		props: true,
+		name: "event-booking",
+		component: () => import("@/pages/EventBooking.vue"),
 	},
 ];
 
@@ -31,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
 	if (to.name === "Login" && isLoggedIn) {
 		next({ name: "Home" });
 	} else if (to.name !== "Login" && !isLoggedIn) {
-		next({ name: "Login" });
+		window.location.href = `/login?redirect-to=${encodeURIComponent(to.fullPath)}`;
 	} else {
 		next();
 	}
