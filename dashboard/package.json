@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^13.6.0",
+    "canvas-confetti": "^1.9.3",
     "feather-icons": "^4.29.2",
     "frappe-ui": "^0.1.188",
     "socket.io-client": "^4.7.2",

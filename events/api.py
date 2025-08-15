@@ -60,7 +60,9 @@ def process_booking(attendees: list[dict], event: str) -> str:
 	booking.insert(ignore_permissions=True)
 	frappe.db.commit()
 
-	return get_payment_link_for_booking(booking.name, redirect_to=f"/dashboard/bookings/{booking.name}")
+	return get_payment_link_for_booking(
+		booking.name, redirect_to=f"/dashboard/bookings/{booking.name}?success=true"
+	)
 
 
 def create_add_on_doc(attendee_name: str, add_ons: list[dict]):
