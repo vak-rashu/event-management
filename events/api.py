@@ -35,7 +35,7 @@ def get_event_booking_data(event_route: str) -> dict:
 
 
 @frappe.whitelist()
-def process_booking(attendees: list[dict], event: str, redirect_to: str = "/events") -> str:
+def process_booking(attendees: list[dict], event: str) -> str:
 	booking = frappe.new_doc("Event Booking")
 	booking.event = event
 	booking.user = frappe.session.user
@@ -60,7 +60,7 @@ def process_booking(attendees: list[dict], event: str, redirect_to: str = "/even
 	booking.insert(ignore_permissions=True)
 	frappe.db.commit()
 
-	return get_payment_link_for_booking(booking.name, redirect_to=redirect_to)
+	return get_payment_link_for_booking(booking.name, redirect_to=f"/dashboard/bookings/{booking.name}")
 
 
 def create_add_on_doc(attendee_name: str, add_ons: list[dict]):

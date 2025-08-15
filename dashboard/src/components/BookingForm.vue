@@ -39,7 +39,7 @@
 						type="submit"
 						:loading="processBooking.loading"
 					>
-						{{ processBooking.loading ? "Processing..." : "Submit Booking" }}
+						{{ processBooking.loading ? "Processing..." : "Pay & Book" }}
 					</Button>
 				</div>
 			</div>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { computed, watch } from "vue";
 import { useStorage } from "@vueuse/core";
 import AttendeeFormControl from "./AttendeeFormControl.vue";
 import BookingSummary from "./BookingSummary.vue";
@@ -200,7 +200,6 @@ async function submit() {
 	const final_payload = {
 		event: eventId.value,
 		attendees: attendees_payload,
-		redirect_to: "/dashboard/bookings",
 	};
 
 	processBooking.submit(final_payload, {
