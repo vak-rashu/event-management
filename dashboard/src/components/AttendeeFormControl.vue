@@ -58,18 +58,20 @@
 				<div class="flex items-center">
 					<FormControl
 						type="checkbox"
-						v-model="attendee.add_ons[addOn.name].selected"
+						:model-value="getAddOnSelected(addOn.name)"
+						@update:model-value="updateAddOnSelection(addOn.name, $event)"
 						:id="`add_on_${addOn.name}_${index}`"
 						:label="`${addOn.title} (${formatPrice(addOn.price, addOn.currency)})`"
 					/>
 				</div>
 
 				<div
-					v-if="addOn.user_selects_option && attendee.add_ons[addOn.name].selected"
+					v-if="addOn.user_selects_option && getAddOnSelected(addOn.name)"
 					class="mt-2 ml-6"
 				>
 					<FormControl
-						v-model="attendee.add_ons[addOn.name].option"
+						:model-value="getAddOnOption(addOn.name)"
+						@update:model-value="updateAddOnOption(addOn.name, $event)"
 						type="select"
 						:options="
 							addOn.options.map((option) => ({ label: option, value: option }))
@@ -86,7 +88,7 @@
 import { Tooltip } from "frappe-ui";
 import { formatPrice } from "../utils/currency.js";
 
-defineProps({
+const props = defineProps({
 	attendee: { type: Object, required: true },
 	index: { type: Number, required: true },
 	availableTicketTypes: { type: Array, required: true },
@@ -95,4 +97,38 @@ defineProps({
 });
 
 defineEmits(["remove"]);
+
+// Helper methods to safely access add-on properties
+const ensureAddOnExists = (addOnName) => {
+	if (!props.attendee.add_ons) {
+		props.attendee.add_ons = {};
+	}
+	if (!props.attendee.add_ons[addOnName]) {
+		const addOn = props.availableAddOns.find((a) => a.name === addOnName);
+		props.attendee.add_ons[addOnName] = {
+			selected: false,
+			option: addOn?.options ? addOn.options[0] || null : null,
+		};
+	}
+};
+
+const getAddOnSelected = (addOnName) => {
+	ensureAddOnExists(addOnName);
+	return props.attendee.add_ons[addOnName].selected;
+};
+
+const getAddOnOption = (addOnName) => {
+	ensureAddOnExists(addOnName);
+	return props.attendee.add_ons[addOnName].option;
+};
+
+const updateAddOnSelection = (addOnName, selected) => {
+	ensureAddOnExists(addOnName);
+	props.attendee.add_ons[addOnName].selected = selected;
+};
+
+const updateAddOnOption = (addOnName, option) => {
+	ensureAddOnExists(addOnName);
+	props.attendee.add_ons[addOnName].option = option;
+};
 </script>

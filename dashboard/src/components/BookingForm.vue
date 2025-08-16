@@ -187,6 +187,30 @@ watch(
 	{ immediate: true }
 );
 
+// Ensure existing attendees have proper add-on structure when availableAddOns changes
+watch(
+	() => props.availableAddOns,
+	(newAddOns) => {
+		if (newAddOns && newAddOns.length > 0) {
+			for (const attendee of attendees.value) {
+				if (!attendee.add_ons) {
+					attendee.add_ons = {};
+				}
+				// Ensure all available add-ons are represented in the attendee's add_ons
+				for (const addOn of newAddOns) {
+					if (!attendee.add_ons[addOn.name]) {
+						attendee.add_ons[addOn.name] = {
+							selected: false,
+							option: addOn.options ? addOn.options[0] || null : null,
+						};
+					}
+				}
+			}
+		}
+	},
+	{ immediate: true, deep: true }
+);
+
 const processBooking = createResource({
 	url: "events.api.process_booking",
 });
