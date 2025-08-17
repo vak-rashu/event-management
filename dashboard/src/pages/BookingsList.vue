@@ -2,9 +2,9 @@
 	<div>
 		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">Your Bookings</h2>
 		<ListView
-			v-if="bookings.list.data"
-			:columns="[{ label: 'Event', key: 'event_title' }]"
-			:rows="bookings.list.data"
+			v-if="bookings.data"
+			:columns="columns"
+			:rows="bookings.data"
 			row-key="name"
 			:options="{
 				selectable: false,
@@ -13,15 +13,37 @@
 					params: { bookingId: row.name },
 				}),
 			}"
-		/>
+		>
+			<template #cell="{ item, row, column }">
+				<Badge
+					v-if="column.key === 'status'"
+					:theme="row.status === 'Confirmed' ? 'green' : 'red'"
+					variant="subtle"
+					size="sm"
+				>
+					{{ item }}
+				</Badge>
+				<span v-else>{{ item }}</span>
+			</template>
+		</ListView>
 	</div>
 </template>
 
 <script setup>
-import { ListView, createListResource } from "frappe-ui";
+import { ListView, useList, Badge } from "frappe-ui";
 import { session } from "../data/session";
+import { formatCurrency } from "../utils/currency";
+import { dayjsLocal } from "frappe-ui";
 
-const bookings = createListResource({
+const columns = [
+	{ label: "Event", key: "event_title" },
+	{ label: "Start Date", key: "start_date" },
+	{ label: "Venue", key: "venue" },
+	{ label: "Amount Paid", key: "formatted_amount" },
+	{ label: "Status", key: "status" },
+];
+
+const bookings = useList({
 	doctype: "Event Booking",
 	fields: [
 		"name",
@@ -38,7 +60,18 @@ const bookings = createListResource({
 	orderBy: "creation desc",
 	realtime: true,
 	auto: true,
-	onSuccess: console.log,
+	cacheKey: "bookings-list",
 	onError: console.error,
+	transform(data) {
+		return data.map((booking) => ({
+			...booking,
+			formatted_amount:
+				booking.total_amount !== 0
+					? formatCurrency(booking.total_amount, booking.currency)
+					: "FREE",
+			status: booking.docstatus === 1 ? "Confirmed" : "Cancelled",
+			start_date: dayjsLocal(booking.start_date).format("MMM DD, YYYY"),
+		}));
+	},
 });
 </script>

@@ -16,14 +16,39 @@ const routes = [
 	},
 	{
 		path: "/bookings",
-		name: "bookings-list",
-		component: () => import("@/pages/BookingsList.vue"),
+		redirect: "/account/bookings",
 	},
 	{
 		path: "/bookings/:bookingId",
+		redirect: (to) => ({
+			name: "booking-details",
+			params: { bookingId: to.params.bookingId },
+		}),
 		props: true,
-		name: "booking-details",
-		component: () => import("@/pages/BookingDetails.vue"),
+	},
+	{
+		path: "/account",
+		component: () => import("@/pages/Account.vue"),
+		redirect: { name: "profile" },
+		children: [
+			{
+				path: "",
+				name: "profile",
+				component: () => import("@/pages/Profile.vue"),
+			},
+			{
+				path: "bookings",
+				name: "bookings-list",
+				component: () => import("@/pages/BookingsList.vue"),
+				default: true,
+			},
+			{
+				path: "bookings/:bookingId",
+				props: true,
+				name: "booking-details",
+				component: () => import("@/pages/BookingDetails.vue"),
+			},
+		],
 	},
 ];
 
