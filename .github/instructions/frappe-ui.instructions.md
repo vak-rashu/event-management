@@ -2,7 +2,33 @@
 applyTo: '**/*.vue'
 ---
 
-List Resource Docs:
+# General Backend API Calls
+
+```vue
+<template>
+  <Button @click="todos.reload()" :loading="todos.loading"> Reload </Button>
+  <pre>{{ todos }}</pre>
+</template>
+
+<script setup>
+import { createResource } from 'frappe-ui'
+let todos = createResource({
+  url: '/api/method/frappe.client.get_list',
+  params: {
+    doctype: 'ToDo',
+    filters: {
+      allocated_to: 'faris@frappe.io',
+    },
+  },
+})
+todos.fetch() // GET request
+
+// POST request
+todos.submit({
+  "description": "New ToDo",
+})
+</script>
+```
 
 # List Resource
 
@@ -859,6 +885,7 @@ const sizes = ['sm', 'md', 'lg']
 
 ### FormControl Component
 
+
 #### Story
 
 ```vue
@@ -996,6 +1023,8 @@ toast.error('Conversion Failed')
 
 
 ### Dropdown Component
+
+The icon is name of a lucide icon.
 
 #### Story
 

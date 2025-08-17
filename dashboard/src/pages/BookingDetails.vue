@@ -56,7 +56,18 @@
 			<h3 class="text-ink-gray-8 font-semibold text-lg mb-3">Tickets</h3>
 
 			<ol class="grid grid-cols-3 gap-3">
-				<li class="shadow-md p-4 rounded-lg bg-white" v-for="ticket in tickets.list.data">
+				<li
+					class="shadow-md p-4 rounded-lg bg-white relative"
+					v-for="ticket in tickets.list.data"
+					:key="ticket.name"
+				>
+					<!-- Three-dot dropdown menu -->
+					<div class="absolute top-2 right-2">
+						<Dropdown :options="getTicketActions(ticket)" placement="left">
+							<Button variant="ghost" icon="more-horizontal" size="sm" />
+						</Dropdown>
+					</div>
+
 					<div>
 						<h4 class="text-md font-semibold text-gray-800">
 							{{ ticket.attendee_name }}
@@ -70,14 +81,23 @@
 				</li>
 			</ol>
 		</div>
+
+		<!-- Ticket Transfer Dialog -->
+		<TicketTransferDialog
+			v-model="showTransferDialog"
+			:ticket="selectedTicket"
+			@success="tickets.reload()"
+		/>
 	</div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { createDocumentResource, createListResource, Spinner } from "frappe-ui";
+import { createDocumentResource, createListResource, Spinner, Button, Dropdown } from "frappe-ui";
 import confetti from "canvas-confetti";
+import TicketTransferDialog from "../components/TicketTransferDialog.vue";
+import LucideUserPen from "~icons/lucide/user-pen";
 
 const route = useRoute();
 const router = useRouter();
@@ -90,6 +110,21 @@ const props = defineProps({
 });
 
 const showSuccessMessage = ref(false);
+const showTransferDialog = ref(false);
+const selectedTicket = ref(null);
+
+const getTicketActions = (ticket) => {
+	return [
+		{
+			label: "Transfer Ticket",
+			icon: LucideUserPen,
+			onClick: () => {
+				selectedTicket.value = ticket;
+				showTransferDialog.value = true;
+			},
+		},
+	];
+};
 
 // Check if this is a successful payment redirect
 onMounted(() => {

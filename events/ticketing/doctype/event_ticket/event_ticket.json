@@ -20,6 +20,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "attendee_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -88,6 +89,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "attendee_email",
    "fieldtype": "Data",
    "label": "Attendee Email",
@@ -111,7 +113,7 @@
    "link_fieldname": "ticket"
   }
  ],
- "modified": "2025-08-14 17:50:05.912640",
+ "modified": "2025-08-17 21:21:44.248705",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Ticket",
