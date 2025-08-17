@@ -34,9 +34,11 @@ import { ListView, useList, Badge } from "frappe-ui";
 import { session } from "../data/session";
 import { formatCurrency } from "../utils/currency";
 import { dayjsLocal } from "frappe-ui";
+import { pluralize } from "../utils/pluralize";
 
 const columns = [
 	{ label: "Event", key: "event_title" },
+	{ label: "", key: "ticket_count" },
 	{ label: "Start Date", key: "start_date" },
 	{ label: "Venue", key: "venue" },
 	{ label: "Amount Paid", key: "formatted_amount" },
@@ -55,6 +57,7 @@ const bookings = useList({
 		"total_amount",
 		"currency",
 		"creation",
+		{ attendees: ["ticket_type"] },
 	],
 	filters: { user: session.user, docstatus: ["!=", "0"] },
 	orderBy: "creation desc",
@@ -71,6 +74,7 @@ const bookings = useList({
 					: "FREE",
 			status: booking.docstatus === 1 ? "Confirmed" : "Cancelled",
 			start_date: dayjsLocal(booking.start_date).format("MMM DD, YYYY"),
+			ticket_count: pluralize(booking.attendees ? booking.attendees.length : 0, "Ticket"),
 		}));
 	},
 });
