@@ -1,5 +1,7 @@
 ### Events
 
+[![CI](https://github.com/BuildWithHussain/events/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/BuildWithHussain/events/actions/workflows/ci.yml)
+
 Event Management App built on Frappe
 
 ### Installation
