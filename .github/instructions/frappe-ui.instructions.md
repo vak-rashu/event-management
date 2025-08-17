@@ -2,7 +2,7 @@
 applyTo: '**/*.vue'
 ---
 
-# General Backend API Calls
+###  General Backend API Calls
 
 ```vue
 <template>
@@ -30,7 +30,92 @@ todos.submit({
 </script>
 ```
 
-# List Resource
+### Document Resource
+
+```vue
+<script setup>
+let todo = createDocumentResource({
+  // name of the doctype
+  doctype: 'ToDo',
+
+  // name of the record
+  name: '',
+
+  // define doc methods to use as resources
+  whitelistedMethods: {
+    sendEmail: 'send_email',
+  },
+  // the above configuration enables the following API
+  // todo.sendEmail.submit()
+
+  // events
+  // error can occur from failed request
+  onError(error) {},
+  // on successful response
+  onSuccess(data) {},
+  // transform data before setting it
+  transform(doc) {
+    doc.open = false
+    return doc
+  },
+  // other events
+  delete: {
+    onSuccess() {},
+    onError() {},
+  },
+  setValue: {
+    onSuccess() {},
+    onError() {},
+  },
+})
+
+</script>
+```
+
+Example API:
+
+```vue
+todo.doc // doc returned from request
+todo.reload() // reload the doc
+
+// update options
+todo.update({
+  doctype: '',
+  name: ''
+})
+
+todo.get // doc resource
+todos.get.loading // true when data is being fetched
+todos.get.error // error that occurred from making the request
+todos.get.promise // promise object of the request, can be awaited
+
+// resource to set value(s) on the document
+todos.setValue
+todos.setValue.submit({
+    // field value pairs to set
+    status: 'Closed',
+    description: 'Updated description'
+})
+
+// same as setValue but debounced
+todos.setValueDebounced
+// will run once after 500ms
+todos.setValueDebounced.submit({
+    description: 'Updated description'
+})
+
+// resource to delete the document
+todos.delete
+todos.delete.submit()
+
+// if whitelistedMethods is defined
+// you get a resource for each whitelisted method
+todos.sendEmail
+todos.sendEmail.submit
+todos.sendEmail.loading
+```
+
+### List Resource
 
 List Resource is a wrapper on top of [Resource](./Resource.story.md) for working
 with lists. This feature only works with a Frappe Framework backend as of now.

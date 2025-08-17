@@ -1,6 +1,56 @@
 import frappe
+from frappe.utils import days_diff, format_date, format_time, today
 
 from events.payments import get_payment_link_for_booking
+
+
+def is_ticket_transfer_allowed(event_id: str) -> bool:
+	"""Check if ticket transfer is allowed based on event start date and settings."""
+	try:
+		# Validate event exists
+		if not frappe.db.exists("FE Event", event_id):
+			return False
+
+		# Get event details
+		event = frappe.get_cached_doc("FE Event", event_id)
+
+		# Get event management settings
+		settings = frappe.get_single("Event Management Settings")
+
+		# Default to 7 days if no setting is found
+		transfer_cutoff_days = settings.get("allow_transfer_ticket_before_event_start_days", 7)
+
+		# Calculate days difference between today and event start date
+		event_start_date = event.start_date
+		if not event_start_date:
+			return False
+
+		# Get days remaining until event starts
+		days_until_event = days_diff(event_start_date, today())
+
+		# Transfer is allowed if there are more days remaining than the cutoff
+		return days_until_event >= transfer_cutoff_days
+
+	except Exception as e:
+		frappe.log_error(f"Error checking ticket transfer eligibility: {e!s}")
+		return False
+
+
+@frappe.whitelist()
+def can_transfer_ticket(event_id: str) -> dict:
+	"""API endpoint to check if ticket transfer is allowed for an event."""
+	return {"can_transfer": is_ticket_transfer_allowed(event_id), "event_id": event_id}
+
+
+@frappe.whitelist()
+def get_transfer_settings() -> dict:
+	"""Get ticket transfer settings."""
+	settings = frappe.get_single("Event Management Settings")
+	return {
+		"allow_transfer_ticket_before_event_start_days": settings.get(
+			"allow_transfer_ticket_before_event_start_days", 7
+		)
+	}
 
 
 @frappe.whitelist()
@@ -75,9 +125,15 @@ def create_add_on_doc(attendee_name: str, add_ons: list[dict]):
 @frappe.whitelist()
 def transfer_ticket(ticket_id: str, new_name: str, new_email: str):
 	"""Transfer a ticket to a new attendee."""
-	ticket = frappe.get_doc("Event Ticket", ticket_id)
-	if not ticket:
+	# Validate ticket exists
+	if not frappe.db.exists("Event Ticket", ticket_id):
 		frappe.throw(frappe._("Ticket not found."))
+
+	ticket = frappe.get_doc("Event Ticket", ticket_id)
+
+	# Check if ticket transfer is allowed
+	if not is_ticket_transfer_allowed(ticket.event):
+		frappe.throw(frappe._("Ticket transfer is not allowed at this time. The transfer window has closed."))
 
 	# Store old attendee info for notification
 	old_name = ticket.attendee_name
@@ -109,7 +165,7 @@ def send_ticket_transfer_emails(ticket_id: str, old_name: str, old_email: str, n
 		<p><strong>Event Details:</strong></p>
 		<ul>
 			<li><strong>Event:</strong> {event.title}</li>
-			<li><strong>Date:</strong> {frappe.format(event.start_date, 'Date')}</li>
+			<li><strong>Date:</strong> {format_date(event.start_date)}</li>
 			<li><strong>Ticket Type:</strong> {ticket.ticket_type}</li>
 			<li><strong>Booking ID:</strong> {booking.name}</li>
 		</ul>
@@ -134,8 +190,8 @@ def send_ticket_transfer_emails(ticket_id: str, old_name: str, old_email: str, n
 		<p><strong>Event Details:</strong></p>
 		<ul>
 			<li><strong>Event:</strong> {event.title}</li>
-			<li><strong>Date:</strong> {frappe.format(event.start_date, 'Date')}</li>
-			<li><strong>Time:</strong> {frappe.format(event.start_time, 'Time') if event.start_time else 'TBA'}</li>
+			<li><strong>Date:</strong> {format_date(event.start_date)}</li>
+			<li><strong>Time:</strong> {format_time(event.start_time) if event.start_time else 'TBA'}</li>
 			<li><strong>Venue:</strong> {event.venue or 'TBA'}</li>
 			<li><strong>Ticket Type:</strong> {ticket.ticket_type}</li>
 			<li><strong>Booking ID:</strong> {booking.name}</li>

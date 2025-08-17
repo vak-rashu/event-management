@@ -55,6 +55,22 @@
 		<div>
 			<h3 class="text-ink-gray-8 font-semibold text-lg mb-3">Tickets</h3>
 
+			<!-- Transfer restriction notice -->
+			<div
+				v-if="!transferEligibility.loading && !canTransferTickets"
+				class="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
+			>
+				<div class="flex items-center">
+					<LucideTriangleAlert class="w-5 h-5 text-yellow-600 mr-3" />
+					<div>
+						<p class="text-yellow-800 text-sm">
+							<strong>Ticket transfers are no longer available</strong> - The
+							transfer window has closed as the event is approaching.
+						</p>
+					</div>
+				</div>
+			</div>
+
 			<ol class="grid grid-cols-3 gap-3">
 				<li
 					class="shadow-md p-4 rounded-lg bg-white relative"
@@ -63,7 +79,11 @@
 				>
 					<!-- Three-dot dropdown menu -->
 					<div class="absolute top-2 right-2">
-						<Dropdown :options="getTicketActions(ticket)" placement="left">
+						<Dropdown
+							:options="getTicketActions(ticket)"
+							placement="left"
+							v-if="getTicketActions(ticket).length > 0"
+						>
 							<Button variant="ghost" icon="more-horizontal" size="sm" />
 						</Dropdown>
 					</div>
@@ -86,18 +106,26 @@
 		<TicketTransferDialog
 			v-model="showTransferDialog"
 			:ticket="selectedTicket"
-			@success="tickets.reload()"
+			@success="onTicketTransferSuccess"
 		/>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { createDocumentResource, createListResource, Spinner, Button, Dropdown } from "frappe-ui";
+import {
+	createDocumentResource,
+	createListResource,
+	createResource,
+	Spinner,
+	Button,
+	Dropdown,
+} from "frappe-ui";
 import confetti from "canvas-confetti";
 import TicketTransferDialog from "../components/TicketTransferDialog.vue";
 import LucideUserPen from "~icons/lucide/user-pen";
+import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 
 const route = useRoute();
 const router = useRouter();
@@ -113,7 +141,22 @@ const showSuccessMessage = ref(false);
 const showTransferDialog = ref(false);
 const selectedTicket = ref(null);
 
+// Resource to check if ticket transfer is allowed
+const transferEligibility = createResource({
+	url: "events.api.can_transfer_ticket",
+	auto: false,
+});
+
+const canTransferTickets = computed(() => {
+	return transferEligibility.data?.can_transfer || false;
+});
+
 const getTicketActions = (ticket) => {
+	// Only show transfer action if transfers are allowed
+	if (!canTransferTickets.value) {
+		return [];
+	}
+
 	return [
 		{
 			label: "Transfer Ticket",
@@ -124,6 +167,14 @@ const getTicketActions = (ticket) => {
 			},
 		},
 	];
+};
+
+const onTicketTransferSuccess = () => {
+	tickets.reload();
+	// Re-check transfer eligibility in case it changed
+	if (booking.doc?.event) {
+		transferEligibility.submit({ event_id: booking.doc.event });
+	}
 };
 
 // Check if this is a successful payment redirect
@@ -192,6 +243,12 @@ const booking = createDocumentResource({
 	doctype: "Event Booking",
 	name: props.bookingId,
 	auto: true,
+	onSuccess: (data) => {
+		// Once booking is loaded, check if ticket transfer is allowed for this event
+		if (data.event) {
+			transferEligibility.submit({ event_id: data.event });
+		}
+	},
 });
 
 const tickets = createListResource({
@@ -203,6 +260,7 @@ const tickets = createListResource({
 		"attendee_name",
 		"attendee_email",
 		"qr_code",
+		"event",
 	],
 	auto: true,
 });
