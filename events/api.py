@@ -7,10 +7,6 @@ from events.payments import get_payment_link_for_booking
 def is_ticket_transfer_allowed(event_id: str) -> bool:
 	"""Check if ticket transfer is allowed based on event start date and settings."""
 	try:
-		# Validate event exists
-		if not frappe.db.exists("FE Event", event_id):
-			return False
-
 		# Get event details
 		event = frappe.get_cached_doc("FE Event", event_id)
 

@@ -9,7 +9,7 @@
 		<Spinner />
 	</div>
 
-	<div v-else-if="booking.doc && tickets.list.data">
+	<div v-else-if="booking.doc && tickets.data">
 		<!-- Success Message (only shown on payment success) -->
 		<Transition
 			name="success-message"
@@ -74,7 +74,7 @@
 			<ol class="grid grid-cols-3 gap-3">
 				<li
 					class="shadow-md p-4 rounded-lg bg-white relative"
-					v-for="ticket in tickets.list.data"
+					v-for="ticket in tickets.data"
 					:key="ticket.name"
 				>
 					<!-- Three-dot dropdown menu -->
@@ -112,7 +112,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
 	createDocumentResource,
@@ -121,6 +121,7 @@ import {
 	Spinner,
 	Button,
 	Dropdown,
+	useList,
 } from "frappe-ui";
 import confetti from "canvas-confetti";
 import TicketTransferDialog from "../components/TicketTransferDialog.vue";
@@ -171,11 +172,23 @@ const getTicketActions = (ticket) => {
 
 const onTicketTransferSuccess = () => {
 	tickets.reload();
-	// Re-check transfer eligibility in case it changed
-	if (booking.doc?.event) {
-		transferEligibility.submit({ event_id: booking.doc.event });
-	}
 };
+
+const booking = createDocumentResource({
+	doctype: "Event Booking",
+	name: props.bookingId,
+	auto: true,
+});
+
+watch(
+	() => booking.doc,
+	() => {
+		// If booking data changes, check if ticket transfer is allowed
+		if (booking.doc?.event) {
+			transferEligibility.submit({ event_id: booking.doc.event });
+		}
+	}
+);
 
 // Check if this is a successful payment redirect
 onMounted(() => {
@@ -239,21 +252,10 @@ const triggerConfetti = () => {
 	}, 250);
 };
 
-const booking = createDocumentResource({
-	doctype: "Event Booking",
-	name: props.bookingId,
-	auto: true,
-	onSuccess: (data) => {
-		// Once booking is loaded, check if ticket transfer is allowed for this event
-		if (data.event) {
-			transferEligibility.submit({ event_id: data.event });
-		}
-	},
-});
-
-const tickets = createListResource({
+const tickets = useList({
 	doctype: "Event Ticket",
 	filters: { booking: props.bookingId },
+	cacheKey: ["booking-tickets", props.bookingId],
 	fields: [
 		"name",
 		"ticket_type.title as ticket_type",
