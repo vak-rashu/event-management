@@ -11,6 +11,7 @@ declare module 'vue' {
     AttendeeFormControl: typeof import('./src/components/AttendeeFormControl.vue')['default']
     BookingForm: typeof import('./src/components/BookingForm.vue')['default']
     BookingSummary: typeof import('./src/components/BookingSummary.vue')['default']
+    LucideCheckCircle: typeof import('~icons/lucide/check-circle')['default']
     LucideChevronRight: typeof import('~icons/lucide/chevron-right')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

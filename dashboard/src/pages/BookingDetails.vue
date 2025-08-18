@@ -25,19 +25,7 @@
 				class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
 			>
 				<div class="flex items-center">
-					<svg
-						class="w-6 h-6 text-green-600 mr-3"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
+					<LucideCheckCircle class="w-6 h-6 text-green-600 mr-3" />
 					<div>
 						<h3 class="text-green-800 font-semibold">Payment Successful! 🎉</h3>
 						<p class="text-green-700">
@@ -91,6 +79,7 @@ import { createDocumentResource, createResource, Spinner, useList } from "frappe
 import { triggerCelebrationConfetti } from "../utils/confetti.js";
 import TicketCard from "../components/TicketCard.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
+import LucideCheckCircle from "~icons/lucide/check-circle";
 
 const route = useRoute();
 const router = useRouter();
@@ -104,12 +93,10 @@ const props = defineProps({
 
 const showSuccessMessage = ref(false);
 
-// Resource to check if ticket transfer is allowed
 const transferEligibility = createResource({
 	url: "events.api.can_transfer_ticket",
 	auto: false,
 });
-
 const canTransferTickets = computed(() => {
 	return transferEligibility.data?.can_transfer || false;
 });
