@@ -88,7 +88,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { createDocumentResource, createResource, Spinner, useList } from "frappe-ui";
-import confetti from "canvas-confetti";
+import { triggerCelebrationConfetti } from "../utils/confetti.js";
 import TicketCard from "../components/TicketCard.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 
@@ -140,7 +140,7 @@ onMounted(() => {
 		showSuccessMessage.value = true;
 
 		// Trigger confetti animation
-		triggerConfetti();
+		triggerCelebrationConfetti();
 
 		// Clean up the URL by removing the success parameter
 		router.replace({
@@ -154,47 +154,6 @@ onMounted(() => {
 		}, 10000);
 	}
 });
-
-const triggerConfetti = () => {
-	// Multiple confetti bursts for celebration
-	const duration = 3000;
-	const animationEnd = Date.now() + duration;
-
-	const randomInRange = (min, max) => Math.random() * (max - min) + min;
-
-	const interval = setInterval(() => {
-		const timeLeft = animationEnd - Date.now();
-
-		if (timeLeft <= 0) {
-			clearInterval(interval);
-			return;
-		}
-
-		const particleCount = 50 * (timeLeft / duration);
-
-		// Left side confetti
-		confetti({
-			particleCount,
-			startVelocity: 30,
-			spread: 360,
-			origin: {
-				x: randomInRange(0.1, 0.3),
-				y: Math.random() - 0.2,
-			},
-		});
-
-		// Right side confetti
-		confetti({
-			particleCount,
-			startVelocity: 30,
-			spread: 360,
-			origin: {
-				x: randomInRange(0.7, 0.9),
-				y: Math.random() - 0.2,
-			},
-		});
-	}, 250);
-};
 
 const tickets = useList({
 	doctype: "Event Ticket",
