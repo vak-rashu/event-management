@@ -39,17 +39,6 @@ def can_transfer_ticket(event_id: str | int) -> dict:
 
 
 @frappe.whitelist()
-def get_transfer_settings() -> dict:
-	"""Get ticket transfer settings."""
-	settings = frappe.get_single("Event Management Settings")
-	return {
-		"allow_transfer_ticket_before_event_start_days": settings.get(
-			"allow_transfer_ticket_before_event_start_days", 7
-		)
-	}
-
-
-@frappe.whitelist()
 def get_event_booking_data(event_route: str) -> dict:
 	data = frappe._dict()
 	event_doc = frappe.get_cached_doc("FE Event", {"route": event_route})
@@ -227,25 +216,66 @@ def get_booking_details(booking_id: str) -> dict:
 	tickets = frappe.db.get_all(
 		"Event Ticket",
 		filters={"booking": booking_id},
-		fields=["name", "attendee_name", "attendee_email", "ticket_type", "qr_code", "event"],
+		fields=[
+			"name",
+			"attendee_name",
+			"attendee_email",
+			"ticket_type.title as ticket_type",
+			"qr_code",
+			"event",
+		],
 	)
 
 	add_ons = frappe.db.get_all(
 		"Ticket Add-on Value",
 		filters={"parent": ("in", (ticket.name for ticket in tickets))},
-		fields=["parent", "add_on", "value", "add_on.title as add_on_title"],
+		fields=["parent", "name", "add_on", "value", "add_on.title as add_on_title"],
 	)
+
+	# Get available options for add-ons
+	event_add_ons = frappe.db.get_all(
+		"Ticket Add-on",
+		filters={"event": booking_doc.event, "user_selects_option": True},
+		fields=["name", "title", "user_selects_option", "options"],
+	)
+
+	add_on_options_map = {}
+	for event_add_on in event_add_ons:
+		if event_add_on.user_selects_option:
+			add_on_options_map[event_add_on.name] = (
+				event_add_on.options.split("\n") if event_add_on.options else []
+			)
 
 	for ticket in tickets:
 		ticket.add_ons = []
 		for add_on in add_ons:
 			if add_on.parent == ticket.name:
-				ticket.add_ons.append(
-					{"name": add_on.add_on, "title": add_on.add_on_title, "value": add_on.value}
-				)
+				add_on_data = {
+					"id": add_on.name,
+					"name": add_on.add_on,
+					"title": add_on.add_on_title,
+					"value": add_on.value,
+					"options": add_on_options_map.get(add_on.add_on, []),
+				}
+				ticket.add_ons.append(add_on_data)
 		ticket.add_ons = sorted(ticket.add_ons, key=lambda x: x["title"])
 
 	details.tickets = tickets
 	details.event = frappe.get_cached_doc("FE Event", booking_doc.event)
 	details.can_transfer_ticket = can_transfer_ticket(details.event.name)
 	return details
+
+
+@frappe.whitelist()
+def change_add_on_preference(add_on_id: str, new_value: str):
+	"""Change the preference value for a ticket add-on."""
+	# Validate that the add-on value exists
+	if not frappe.db.exists("Ticket Add-on Value", add_on_id):
+		frappe.throw(frappe._("Add-on value not found."))
+
+	frappe.db.set_value(
+		"Ticket Add-on Value",
+		add_on_id,
+		"value",
+		new_value,
+	)
