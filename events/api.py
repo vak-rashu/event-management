@@ -4,7 +4,7 @@ from frappe.utils import days_diff, format_date, format_time, today
 from events.payments import get_payment_link_for_booking
 
 
-def is_ticket_transfer_allowed(event_id: str) -> bool:
+def is_ticket_transfer_allowed(event_id: str | int) -> bool:
 	"""Check if ticket transfer is allowed based on event start date and settings."""
 	try:
 		# Get event details
@@ -33,7 +33,7 @@ def is_ticket_transfer_allowed(event_id: str) -> bool:
 
 
 @frappe.whitelist()
-def can_transfer_ticket(event_id: str) -> dict:
+def can_transfer_ticket(event_id: str | int) -> dict:
 	"""API endpoint to check if ticket transfer is allowed for an event."""
 	return {"can_transfer": is_ticket_transfer_allowed(event_id), "event_id": event_id}
 
@@ -215,3 +215,37 @@ def send_ticket_transfer_emails(ticket_id: str, old_name: str, old_email: str, n
 	except Exception as e:
 		frappe.log_error(f"Failed to send ticket transfer emails for ticket {ticket_id}: {e!s}")
 		# Don't raise the exception to avoid failing the main transfer process
+
+
+@frappe.whitelist()
+def get_booking_details(booking_id: str) -> dict:
+	"""Get detailed information about a specific booking."""
+	details = frappe._dict()
+	booking_doc = frappe.get_cached_doc("Event Booking", booking_id)
+	details.doc = booking_doc
+
+	tickets = frappe.db.get_all(
+		"Event Ticket",
+		filters={"booking": booking_id},
+		fields=["name", "attendee_name", "attendee_email", "ticket_type", "qr_code", "event"],
+	)
+
+	add_ons = frappe.db.get_all(
+		"Ticket Add-on Value",
+		filters={"parent": ("in", (ticket.name for ticket in tickets))},
+		fields=["parent", "add_on", "value", "add_on.title as add_on_title"],
+	)
+
+	for ticket in tickets:
+		ticket.add_ons = []
+		for add_on in add_ons:
+			if add_on.parent == ticket.name:
+				ticket.add_ons.append(
+					{"name": add_on.add_on, "title": add_on.add_on_title, "value": add_on.value}
+				)
+		ticket.add_ons = sorted(ticket.add_ons, key=lambda x: x["title"])
+
+	details.tickets = tickets
+	details.event = frappe.get_cached_doc("FE Event", booking_doc.event)
+	details.can_transfer_ticket = can_transfer_ticket(details.event.name)
+	return details

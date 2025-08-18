@@ -5,11 +5,11 @@
 		</RouterLink>
 	</div>
 
-	<div class="w-4" v-if="booking.loading || tickets.loading">
+	<div class="w-4" v-if="bookingDetails.loading">
 		<Spinner />
 	</div>
 
-	<div v-else-if="booking.doc && tickets.data">
+	<div v-else-if="bookingDetails.data">
 		<!-- Success Message (only shown on payment success) -->
 		<Transition
 			name="success-message"
@@ -45,7 +45,7 @@
 
 			<!-- Transfer restriction notice -->
 			<div
-				v-if="!transferEligibility.loading && !canTransferTickets"
+				v-if="!canTransferTickets"
 				class="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
 			>
 				<div class="flex items-center">
@@ -61,7 +61,7 @@
 
 			<ol class="grid grid-cols-3 gap-3">
 				<TicketCard
-					v-for="ticket in tickets.data"
+					v-for="ticket in bookingDetails.data.tickets"
 					:key="ticket.name"
 					:ticket="ticket"
 					:can-transfer="canTransferTickets"
@@ -73,9 +73,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { createDocumentResource, createResource, Spinner, useList } from "frappe-ui";
+import { createResource, Spinner } from "frappe-ui";
 import { triggerCelebrationConfetti } from "../utils/confetti.js";
 import TicketCard from "../components/TicketCard.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
@@ -93,33 +93,19 @@ const props = defineProps({
 
 const showSuccessMessage = ref(false);
 
-const transferEligibility = createResource({
-	url: "events.api.can_transfer_ticket",
-	auto: false,
-});
-const canTransferTickets = computed(() => {
-	return transferEligibility.data?.can_transfer || false;
-});
-
-const onTicketTransferSuccess = () => {
-	tickets.reload();
-};
-
-const booking = createDocumentResource({
-	doctype: "Event Booking",
-	name: props.bookingId,
+const bookingDetails = createResource({
+	url: "events.api.get_booking_details",
+	params: { booking_id: props.bookingId },
 	auto: true,
 });
 
-watch(
-	() => booking.doc,
-	() => {
-		// If booking data changes, check if ticket transfer is allowed
-		if (booking.doc?.event) {
-			transferEligibility.submit({ event_id: booking.doc.event });
-		}
-	}
-);
+const canTransferTickets = computed(() => {
+	return bookingDetails.data?.can_transfer_ticket?.can_transfer || false;
+});
+
+const onTicketTransferSuccess = () => {
+	bookingDetails.reload();
+};
 
 // Check if this is a successful payment redirect
 onMounted(() => {
@@ -140,20 +126,5 @@ onMounted(() => {
 			showSuccessMessage.value = false;
 		}, 10000);
 	}
-});
-
-const tickets = useList({
-	doctype: "Event Ticket",
-	filters: { booking: props.bookingId },
-	cacheKey: ["booking-tickets", props.bookingId],
-	fields: [
-		"name",
-		"ticket_type.title as ticket_type",
-		"attendee_name",
-		"attendee_email",
-		"qr_code",
-		"event",
-	],
-	auto: true,
 });
 </script>
