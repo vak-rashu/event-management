@@ -14,6 +14,7 @@ declare module 'vue' {
     LucideChevronRight: typeof import('~icons/lucide/chevron-right')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TicketCard: typeof import('./src/components/TicketCard.vue')['default']
     TicketTransferDialog: typeof import('./src/components/TicketTransferDialog.vue')['default']
     TransferTicketDialog: typeof import('./src/components/TransferTicketDialog.vue')['default']
   }

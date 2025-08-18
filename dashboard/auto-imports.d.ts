@@ -6,5 +6,6 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const LucideSettings: typeof import('~icons/lucide/settings')['default']
   const LucideUserPen: typeof import('~icons/lucide/user-pen')['default']
 }

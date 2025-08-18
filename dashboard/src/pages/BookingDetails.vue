@@ -72,60 +72,24 @@
 			</div>
 
 			<ol class="grid grid-cols-3 gap-3">
-				<li
-					class="shadow-md p-4 rounded-lg bg-white relative"
+				<TicketCard
 					v-for="ticket in tickets.data"
 					:key="ticket.name"
-				>
-					<!-- Three-dot dropdown menu -->
-					<div class="absolute top-2 right-2">
-						<Dropdown
-							:options="getTicketActions(ticket)"
-							placement="left"
-							v-if="getTicketActions(ticket).length > 0"
-						>
-							<Button variant="ghost" icon="more-horizontal" size="sm" />
-						</Dropdown>
-					</div>
-
-					<div>
-						<h4 class="text-md font-semibold text-gray-800">
-							{{ ticket.attendee_name }}
-						</h4>
-						<p class="text-sm text-gray-600">Email: {{ ticket.attendee_email }}</p>
-						<p class="text-sm text-gray-600">Ticket Type: {{ ticket.ticket_type }}</p>
-						<p class="text-sm text-gray-600">
-							<img :src="ticket.qr_code" alt="QR Code" />
-						</p>
-					</div>
-				</li>
+					:ticket="ticket"
+					:can-transfer="canTransferTickets"
+					@transfer-success="onTicketTransferSuccess"
+				/>
 			</ol>
 		</div>
-
-		<!-- Ticket Transfer Dialog -->
-		<TicketTransferDialog
-			v-model="showTransferDialog"
-			:ticket="selectedTicket"
-			@success="onTicketTransferSuccess"
-		/>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, watchEffect } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import {
-	createDocumentResource,
-	createListResource,
-	createResource,
-	Spinner,
-	Button,
-	Dropdown,
-	useList,
-} from "frappe-ui";
+import { createDocumentResource, createResource, Spinner, useList } from "frappe-ui";
 import confetti from "canvas-confetti";
-import TicketTransferDialog from "../components/TicketTransferDialog.vue";
-import LucideUserPen from "~icons/lucide/user-pen";
+import TicketCard from "../components/TicketCard.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 
 const route = useRoute();
@@ -139,8 +103,6 @@ const props = defineProps({
 });
 
 const showSuccessMessage = ref(false);
-const showTransferDialog = ref(false);
-const selectedTicket = ref(null);
 
 // Resource to check if ticket transfer is allowed
 const transferEligibility = createResource({
@@ -151,24 +113,6 @@ const transferEligibility = createResource({
 const canTransferTickets = computed(() => {
 	return transferEligibility.data?.can_transfer || false;
 });
-
-const getTicketActions = (ticket) => {
-	// Only show transfer action if transfers are allowed
-	if (!canTransferTickets.value) {
-		return [];
-	}
-
-	return [
-		{
-			label: "Transfer Ticket",
-			icon: LucideUserPen,
-			onClick: () => {
-				selectedTicket.value = ticket;
-				showTransferDialog.value = true;
-			},
-		},
-	];
-};
 
 const onTicketTransferSuccess = () => {
 	tickets.reload();
