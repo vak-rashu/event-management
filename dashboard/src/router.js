@@ -48,6 +48,17 @@ const routes = [
 				name: "booking-details",
 				component: () => import("@/pages/BookingDetails.vue"),
 			},
+			{
+				path: "sponsorships",
+				name: "sponsorships-list",
+				component: () => import("@/pages/SponsorshipsList.vue"),
+			},
+			{
+				path: "sponsorships/:enquiryId",
+				props: true,
+				name: "sponsorship-details",
+				component: () => import("@/pages/SponsorshipDetails.vue"),
+			},
 		],
 	},
 ];

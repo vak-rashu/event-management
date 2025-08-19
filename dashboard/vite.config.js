@@ -27,7 +27,10 @@ export default defineConfig(async ({ command, mode }) => {
 	const config = {
 		plugins: [
 			frappeui({
-				frappeProxy: true,
+				frappeProxy: {
+					port: 8080,
+					source: "^/(app|login|api|assets|files|private|razorpay_checkout)",
+				},
 				jinjaBootData: true,
 				lucideIcons: true,
 				buildConfig: {

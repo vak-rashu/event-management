@@ -279,3 +279,124 @@ def change_add_on_preference(add_on_id: str, new_value: str):
 		"value",
 		new_value,
 	)
+
+
+@frappe.whitelist()
+def get_sponsorship_details(enquiry_id: str) -> dict:
+	"""Get detailed information about a sponsorship enquiry including event and sponsor details."""
+	# Get the sponsorship enquiry
+	enquiry = frappe.get_doc("Sponsorship Enquiry", enquiry_id)
+
+	# Check if user has permission to view this enquiry
+	if enquiry.owner != frappe.session.user and not frappe.has_permission(
+		"Sponsorship Enquiry", "read", enquiry
+	):
+		frappe.throw(frappe._("Not permitted to view this sponsorship enquiry"))
+
+	# Get tier title if tier exists
+	tier_title = ""
+	if enquiry.tier:
+		tier_title = frappe.db.get_value("Sponsorship Tier", enquiry.tier, "title") or enquiry.tier
+
+	# Get event details
+	event_details = {}
+	if enquiry.event:
+		event = frappe.get_cached_doc("FE Event", enquiry.event)
+		event_details = {
+			"title": event.title,
+			"short_description": getattr(event, "short_description", ""),
+			"about": getattr(event, "about", ""),
+			"start_date": event.start_date,
+			"end_date": getattr(event, "end_date", ""),
+			"venue": getattr(event, "venue", ""),
+			"route": getattr(event, "route", ""),
+		}
+
+	# Check if there's a corresponding Event Sponsor
+	sponsor_details = None
+	sponsors = frappe.db.get_all(
+		"Event Sponsor",
+		filters={"enquiry": enquiry_id},
+		fields=["name", "company_name", "creation", "event", "tier"],
+		limit=1,
+	)
+
+	if sponsors:
+		sponsor_details = sponsors[0]
+		# Get sponsor tier title too
+		if sponsor_details.get("tier"):
+			sponsor_tier_title = frappe.db.get_value("Sponsorship Tier", sponsor_details["tier"], "title")
+			sponsor_details["tier_title"] = sponsor_tier_title or sponsor_details["tier"]
+
+	return {
+		"enquiry": {
+			"name": enquiry.name,
+			"company_name": enquiry.company_name,
+			"company_logo": enquiry.company_logo,
+			"event": enquiry.event,
+			"tier": enquiry.tier,
+			"tier_title": tier_title,
+			"status": enquiry.status,
+			"creation": enquiry.creation,
+			"owner": enquiry.owner,
+		},
+		"event_details": event_details,
+		"sponsor_details": sponsor_details,
+		"has_sponsor": bool(sponsor_details),
+	}
+
+
+@frappe.whitelist()
+def get_user_sponsorship_inquiries() -> list:
+	"""Get all sponsorship inquiries for the current user."""
+	inquiries = frappe.db.get_all(
+		"Sponsorship Enquiry",
+		filters={"owner": frappe.session.user},
+		fields=["name", "company_name", "event", "tier", "status", "creation"],
+		order_by="creation desc",
+	)
+
+	# Get event titles and tier titles
+	for inquiry in inquiries:
+		if inquiry.event:
+			event_title = frappe.db.get_value("FE Event", inquiry.event, "title")
+			inquiry["event_title"] = event_title
+
+		if inquiry.tier:
+			tier_title = frappe.db.get_value("Sponsorship Tier", inquiry.tier, "title")
+			inquiry["tier_title"] = tier_title or inquiry.tier
+		else:
+			inquiry["tier_title"] = ""
+
+	# Check which inquiries have corresponding sponsors
+	inquiry_names = [inquiry.name for inquiry in inquiries]
+	if inquiry_names:
+		sponsors = frappe.db.get_all(
+			"Event Sponsor",
+			filters={"enquiry": ["in", inquiry_names]},
+			fields=["enquiry"],
+		)
+		sponsored_inquiries = {sponsor.enquiry for sponsor in sponsors}
+
+		for inquiry in inquiries:
+			inquiry["has_sponsor"] = inquiry.name in sponsored_inquiries
+	else:
+		for inquiry in inquiries:
+			inquiry["has_sponsor"] = False
+
+	return inquiries
+
+
+@frappe.whitelist()
+def create_sponsorship_payment_link(enquiry_id: str, tier_id: str) -> str:
+	"""Create a payment link for a sponsorship enquiry with selected tier."""
+	from events.payments import get_payment_link_for_sponsorship
+
+	# Verify the enquiry belongs to the current user
+	enquiry = frappe.get_doc("Sponsorship Enquiry", enquiry_id)
+	if enquiry.owner != frappe.session.user:
+		frappe.throw(frappe._("Not permitted to create payment for this enquiry"))
+
+	# Create payment link
+	redirect_url = f"/dashboard/account/sponsorships/{enquiry_id}?success=true"
+	return get_payment_link_for_sponsorship(enquiry_id, tier_id, redirect_url)

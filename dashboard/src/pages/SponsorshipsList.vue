@@ -1,0 +1,91 @@
+<template>
+	<div>
+		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">Your Sponsorship Inquiries</h2>
+		<ListView
+			v-if="sponsorships.data"
+			:columns="columns"
+			:rows="sponsorships.data"
+			row-key="name"
+			:options="{
+				selectable: false,
+				getRowRoute: (row) => ({
+					name: 'sponsorship-details',
+					params: { enquiryId: row.name },
+				}),
+			}"
+		>
+			<template #cell="{ item, row, column }">
+				<Badge
+					v-if="column.key === 'status'"
+					:theme="getStatusTheme(row.status)"
+					variant="subtle"
+					size="sm"
+				>
+					{{ item }}
+				</Badge>
+				<Badge
+					v-else-if="column.key === 'sponsorship_status'"
+					:theme="row.has_sponsor ? 'green' : 'gray'"
+					variant="subtle"
+					size="sm"
+				>
+					{{ row.has_sponsor ? "Sponsored" : "Inquiry Only" }}
+				</Badge>
+				<span v-else>{{ item }}</span>
+			</template>
+		</ListView>
+
+		<div v-else-if="sponsorships.loading" class="w-4">
+			<Spinner />
+		</div>
+
+		<div
+			v-else-if="sponsorships.data && sponsorships.data.length === 0"
+			class="text-center py-8"
+		>
+			<div class="text-ink-gray-5 text-lg mb-2">No sponsorship inquiries yet</div>
+			<div class="text-ink-gray-4 text-sm">Your sponsorship inquiries will appear here</div>
+		</div>
+	</div>
+</template>
+
+<script setup>
+import { ListView, Badge, Spinner, createResource } from "frappe-ui";
+import { dayjsLocal } from "frappe-ui";
+
+const columns = [
+	{ label: "Company", key: "company_name" },
+	{ label: "Event", key: "event_title" },
+	{ label: "Tier", key: "tier_title" },
+	{ label: "Status", key: "status" },
+	{ label: "Sponsorship", key: "sponsorship_status" },
+	{ label: "Submitted", key: "formatted_creation" },
+];
+
+const sponsorships = createResource({
+	url: "events.api.get_user_sponsorship_inquiries",
+	auto: true,
+	cacheKey: "sponsorships-list",
+	onError: console.error,
+	transform(data) {
+		return data.map((inquiry) => ({
+			...inquiry,
+			formatted_creation: dayjsLocal(inquiry.creation).format("MMM DD, YYYY"),
+			sponsorship_status: inquiry.has_sponsor ? "Sponsored" : "Inquiry Only",
+		}));
+	},
+});
+
+const getStatusTheme = (status) => {
+	switch (status) {
+		case "Paid":
+			return "green";
+		case "Pending":
+			return "orange";
+		case "Withdrawn":
+			return "red";
+		default:
+			return "gray";
+	}
+};
+</script>
