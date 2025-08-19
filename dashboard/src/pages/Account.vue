@@ -19,6 +19,7 @@ const router = useRouter();
 const tabs = [
 	{ label: "Profile", name: "profile" },
 	{ label: "Bookings", name: "bookings-list" },
+	{ label: "My Tickets", name: "tickets-list" },
 	{ label: "Sponsorships", name: "sponsorships-list" },
 ];
 
@@ -29,6 +30,9 @@ const getTabIndexFromRoute = () => {
 	// Check path patterns for each tab
 	if (currentPath.startsWith("/account/bookings")) {
 		return tabs.findIndex((tab) => tab.name === "bookings-list");
+	}
+	if (currentPath.startsWith("/account/tickets")) {
+		return tabs.findIndex((tab) => tab.name === "tickets-list");
 	}
 	if (currentPath.startsWith("/account/sponsorships")) {
 		return tabs.findIndex((tab) => tab.name === "sponsorships-list");

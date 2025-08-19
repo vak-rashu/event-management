@@ -420,3 +420,46 @@ def withdraw_sponsorship_enquiry(enquiry_id: str):
 	# Update status to withdrawn
 	enquiry.status = "Withdrawn"
 	enquiry.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def get_ticket_details(ticket_id: str) -> dict:
+	"""Get detailed information about a specific ticket."""
+	details = frappe._dict()
+	ticket_doc = frappe.get_cached_doc("Event Ticket", ticket_id)
+
+	if frappe.session.user != "Administrator":
+		# Verify the ticket belongs to the current user
+		if ticket_doc.attendee_email != frappe.session.user:
+			frappe.throw(frappe._("Not permitted to view this ticket"))
+
+	details.doc = ticket_doc
+
+	# Get add-ons with their details
+	add_ons = frappe.db.get_all(
+		"Ticket Add-on Value",
+		filters={"parent": ticket_id},
+		fields=["name", "add_on", "add_on.title as add_on_title", "value", "price", "currency"],
+	)
+
+	details.add_ons = add_ons
+	details.event = frappe.get_cached_doc("FE Event", ticket_doc.event)
+
+	# Only include booking information if the current user is the owner of the booking
+	booking_doc = None
+	if ticket_doc.booking:
+		booking_doc = frappe.get_cached_doc("Event Booking", ticket_doc.booking)
+		# Check if current user is the owner of the booking
+		if booking_doc.owner == frappe.session.user:
+			details.booking = booking_doc
+		else:
+			details.booking = None
+	else:
+		details.booking = None
+
+	details.ticket_type = frappe.get_cached_doc("Event Ticket Type", ticket_doc.ticket_type)
+	details.can_transfer_ticket = (
+		can_transfer_ticket(details.event.name) if details.event else {"can_transfer": False}
+	)
+
+	return details
