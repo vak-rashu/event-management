@@ -1,8 +1,20 @@
 <template>
-	<div class="mb-6">
+	<div class="mb-6 flex items-center justify-between">
 		<RouterLink :to="{ name: 'sponsorships-list' }" class="hover:underline">
 			&larr; Back to Sponsorships
 		</RouterLink>
+
+		<!-- Withdraw Button (show only if not paid and not withdrawn) -->
+		<Button
+			v-if="canWithdraw"
+			variant="subtle"
+			theme="red"
+			size="sm"
+			@click="showWithdrawDialog = true"
+			:loading="withdrawResource.loading"
+		>
+			Withdraw Inquiry
+		</Button>
 	</div>
 
 	<div class="w-4" v-if="enquiryDetails.loading">
@@ -66,6 +78,22 @@
 						>Sponsorship Tier</label
 					>
 					<p class="text-green-900">{{ sponsorDetails.tier_title }}</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Withdrawn Alert (shown at top for withdrawn inquiries) -->
+		<div
+			v-if="enquiryDetails.data.enquiry.status === 'Withdrawn'"
+			class="mb-6 bg-red-50 border border-red-200 rounded-lg p-6"
+		>
+			<div class="flex items-center">
+				<LucideXCircle class="w-6 h-6 text-red-600 mr-3" />
+				<div>
+					<h3 class="text-red-800 font-semibold">Inquiry Withdrawn</h3>
+					<p class="text-red-700 text-sm mt-1">
+						This sponsorship inquiry has been withdrawn and is no longer active.
+					</p>
 				</div>
 			</div>
 		</div>
@@ -306,14 +334,47 @@
 		:event-title="enquiryDetails.data?.event_details.title"
 		@payment-started="onPaymentStarted"
 	/>
+
+	<!-- Withdraw Confirmation Dialog -->
+	<Dialog
+		v-model="showWithdrawDialog"
+		:options="{
+			title: 'Withdraw Sponsorship Inquiry',
+			message:
+				'Are you sure you want to withdraw this sponsorship inquiry? This action cannot be undone.',
+			size: 'lg',
+			icon: {
+				name: 'alert-triangle',
+				appearance: 'warning',
+			},
+			actions: [
+				{
+					label: 'Withdraw Inquiry',
+					variant: 'solid',
+					theme: 'red',
+					onClick: () => withdrawResource.submit(),
+				},
+			],
+		}"
+	/>
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
-import { createResource, Spinner, Badge, Button, FileUploader, ErrorMessage } from "frappe-ui";
+import {
+	createResource,
+	Spinner,
+	Badge,
+	Button,
+	FileUploader,
+	ErrorMessage,
+	Dialog,
+} from "frappe-ui";
+import { toast } from "frappe-ui";
 import { dayjsLocal } from "frappe-ui";
 import LucideCheckCircle from "~icons/lucide/check-circle";
 import LucideClock from "~icons/lucide/clock";
+import LucideXCircle from "~icons/lucide/x-circle";
 import SponsorshipPaymentDialog from "../components/SponsorshipPaymentDialog.vue";
 import { usePaymentSuccess } from "../composables/usePaymentSuccess.js";
 
@@ -325,6 +386,7 @@ const props = defineProps({
 });
 
 const showPaymentDialog = ref(false);
+const showWithdrawDialog = ref(false);
 
 const enquiryDetails = createResource({
 	url: "events.api.get_sponsorship_details",
@@ -332,6 +394,26 @@ const enquiryDetails = createResource({
 		enquiry_id: props.enquiryId,
 	},
 	auto: true,
+});
+
+// Resource to withdraw sponsorship inquiry
+const withdrawResource = createResource({
+	url: "events.api.withdraw_sponsorship_enquiry",
+	makeParams() {
+		return {
+			enquiry_id: props.enquiryId,
+		};
+	},
+	onSuccess: () => {
+		toast.success("Inquiry withdrawn successfully");
+		showWithdrawDialog.value = false;
+		// Reload the enquiry details to show updated status
+		enquiryDetails.reload();
+	},
+	onError: (err) => {
+		toast.error(err.messages?.[0] || "Failed to withdraw inquiry");
+		showWithdrawDialog.value = false;
+	},
 });
 
 // Resource to update company logo
@@ -376,6 +458,13 @@ const { showSuccessMessage } = usePaymentSuccess({
 // Extract sponsor details from the response
 const sponsorDetails = computed(() => {
 	return enquiryDetails.data?.sponsor_details || null;
+});
+
+// Check if inquiry can be withdrawn (not paid and not already withdrawn)
+const canWithdraw = computed(() => {
+	if (!enquiryDetails.data?.enquiry) return false;
+	const status = enquiryDetails.data.enquiry.status;
+	return status !== "Paid" && status !== "Withdrawn";
 });
 
 // Get the current company logo (from sponsor if confirmed, otherwise from enquiry)

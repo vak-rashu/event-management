@@ -15,6 +15,7 @@ declare module 'vue' {
     EventSponsorForm: typeof import('./src/components/EventSponsorForm.vue')['default']
     LucideCheckCircle: typeof import('~icons/lucide/check-circle')['default']
     LucideChevronRight: typeof import('~icons/lucide/chevron-right')['default']
+    LucideXCircle: typeof import('~icons/lucide/x-circle')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SponsorLogoUploader: typeof import('./src/components/SponsorLogoUploader.vue')['default']

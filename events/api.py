@@ -400,3 +400,23 @@ def create_sponsorship_payment_link(enquiry_id: str, tier_id: str) -> str:
 	# Create payment link
 	redirect_url = f"/dashboard/account/sponsorships/{enquiry_id}?success=true"
 	return get_payment_link_for_sponsorship(enquiry_id, tier_id, redirect_url)
+
+
+@frappe.whitelist()
+def withdraw_sponsorship_enquiry(enquiry_id: str):
+	"""Withdraw a sponsorship enquiry if it's not paid yet."""
+	# Verify the enquiry exists and belongs to the current user
+	enquiry = frappe.get_cached_doc("Sponsorship Enquiry", enquiry_id)
+	if enquiry.owner != frappe.session.user:
+		frappe.throw(frappe._("Not permitted to withdraw this enquiry"))
+
+	# Check if the enquiry can be withdrawn (not paid)
+	if enquiry.status == "Paid":
+		frappe.throw(frappe._("Cannot withdraw a paid sponsorship enquiry"))
+
+	if enquiry.status == "Withdrawn":
+		frappe.throw(frappe._("This sponsorship enquiry has already been withdrawn"))
+
+	# Update status to withdrawn
+	enquiry.status = "Withdrawn"
+	enquiry.save(ignore_permissions=True)
