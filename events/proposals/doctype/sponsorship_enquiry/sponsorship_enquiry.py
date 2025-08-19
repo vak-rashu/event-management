@@ -19,7 +19,7 @@ class SponsorshipEnquiry(Document):
 		company_logo: DF.AttachImage
 		company_name: DF.Data
 		event: DF.Link
-		status: DF.Literal["Pending", "Paid", "Withdrawn"]
+		status: DF.Literal["Approval Pending", "Payment Pending", "Paid", "Withdrawn"]
 		tier: DF.Link | None
 	# end: auto-generated types
 

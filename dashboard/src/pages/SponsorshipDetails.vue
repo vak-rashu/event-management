@@ -70,9 +70,27 @@
 			</div>
 		</div>
 
-		<!-- Payment Pending Alert (shown at top for pending inquiries) -->
+		<!-- Approval Pending Alert (shown at top for pending approval) -->
 		<div
-			v-else-if="enquiryDetails.data.enquiry.status === 'Pending'"
+			v-if="enquiryDetails.data.enquiry.status === 'Approval Pending'"
+			class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-6"
+		>
+			<div class="flex items-center">
+				<LucideClock class="w-6 h-6 text-blue-600 mr-3" />
+				<div>
+					<h3 class="text-blue-800 font-semibold">Awaiting Approval</h3>
+					<p class="text-blue-700 text-sm mt-1">
+						Your sponsorship inquiry has been submitted and is pending approval from
+						the event management team. You'll be notified once it's approved and ready
+						for payment.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Payment Pending Alert (shown at top for pending payments) -->
+		<div
+			v-else-if="enquiryDetails.data.enquiry.status === 'Payment Pending'"
 			class="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-6"
 		>
 			<div class="flex items-center justify-between">
@@ -81,7 +99,7 @@
 					<div>
 						<h3 class="text-orange-800 font-semibold">Payment Pending</h3>
 						<p class="text-orange-700 text-sm mt-1">
-							Your sponsorship inquiry has been submitted. Complete your payment to
+							Your sponsorship inquiry has been approved! Complete your payment to
 							confirm your sponsorship.
 						</p>
 					</div>
@@ -281,7 +299,7 @@
 
 	<!-- Payment Dialog -->
 	<SponsorshipPaymentDialog
-		v-if="enquiryDetails.data && enquiryDetails.data.enquiry.status === 'Pending'"
+		v-if="enquiryDetails.data && enquiryDetails.data.enquiry.status === 'Payment Pending'"
 		v-model:open="showPaymentDialog"
 		:enquiry-id="enquiryId"
 		:event-id="enquiryDetails.data?.enquiry.event"
@@ -388,8 +406,10 @@ const getStatusTheme = (status) => {
 	switch (status) {
 		case "Paid":
 			return "green";
-		case "Pending":
+		case "Payment Pending":
 			return "orange";
+		case "Approval Pending":
+			return "blue";
 		case "Withdrawn":
 			return "red";
 		default:

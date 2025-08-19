@@ -80,8 +80,10 @@ const getStatusTheme = (status) => {
 	switch (status) {
 		case "Paid":
 			return "green";
-		case "Pending":
+		case "Payment Pending":
 			return "orange";
+		case "Approval Pending":
+			return "blue";
 		case "Withdrawn":
 			return "red";
 		default:
