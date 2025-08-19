@@ -317,7 +317,7 @@ def get_sponsorship_details(enquiry_id: str) -> dict:
 	sponsors = frappe.db.get_all(
 		"Event Sponsor",
 		filters={"enquiry": enquiry_id},
-		fields=["name", "company_name", "creation", "event", "tier"],
+		fields=["name", "company_name", "company_logo", "creation", "event", "tier"],
 		limit=1,
 	)
 

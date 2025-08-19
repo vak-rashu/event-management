@@ -98,7 +98,7 @@
 			<!-- Company Information -->
 			<div class="bg-white border border-gray-200 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Company Information</h3>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div>
 						<label class="block text-sm font-medium text-ink-gray-6 mb-1"
 							>Company Name</label
@@ -107,15 +107,84 @@
 							{{ enquiryDetails.data.enquiry.company_name }}
 						</p>
 					</div>
-					<div v-if="enquiryDetails.data.enquiry.company_logo">
-						<label class="block text-sm font-medium text-ink-gray-6 mb-1"
+					<div>
+						<label class="block text-sm font-medium text-ink-gray-6 mb-2"
 							>Company Logo</label
 						>
-						<img
-							:src="enquiryDetails.data.enquiry.company_logo"
-							:alt="enquiryDetails.data.enquiry.company_name"
-							class="h-16 w-auto object-contain"
-						/>
+						<FileUploader
+							@success="(file) => updateLogo(file.file_url)"
+							:validateFile="validateIsImageFile"
+							:uploadArgs="logoUploadArgs"
+						>
+							<template
+								#default="{
+									openFileSelector,
+									error: uploadError,
+									uploading,
+									progress,
+								}"
+							>
+								<div class="space-y-2">
+									<!-- Logo Display -->
+									<div v-if="currentLogo" class="mb-2">
+										<img
+											:src="currentLogo"
+											:alt="companyName"
+											class="h-16 w-auto object-contain border border-gray-200 rounded p-1"
+											:class="{
+												'opacity-50':
+													uploading || updateLogoResource.loading,
+											}"
+										/>
+									</div>
+									<div v-else class="mb-2">
+										<div
+											class="h-16 w-20 border-2 border-dashed border-gray-300 rounded flex items-center justify-center"
+										>
+											<span class="text-gray-400 text-xs">No Logo</span>
+										</div>
+									</div>
+
+									<!-- Change Logo Button -->
+									<div>
+										<Button
+											variant="outline"
+											size="sm"
+											:disabled="uploading || updateLogoResource.loading"
+											@click="openFileSelector"
+										>
+											{{ currentLogo ? "Change Logo" : "Upload Logo" }}
+										</Button>
+									</div>
+
+									<!-- Upload Progress -->
+									<div v-if="uploading" class="text-xs text-gray-600">
+										Uploading... {{ progress }}%
+										<div class="w-full bg-gray-200 rounded-full h-1 mt-1">
+											<div
+												class="bg-blue-600 h-1 rounded-full transition-all duration-300"
+												:style="{ width: progress + '%' }"
+											></div>
+										</div>
+									</div>
+
+									<!-- Update Status -->
+									<div
+										v-else-if="updateLogoResource.loading"
+										class="text-xs text-gray-600"
+									>
+										Updating logo...
+									</div>
+
+									<!-- Error Message -->
+									<ErrorMessage
+										v-if="uploadError"
+										:message="uploadError"
+										class="text-xs"
+									/>
+								</div>
+							</template>
+						</FileUploader>
 					</div>
 				</div>
 			</div>
@@ -223,7 +292,7 @@
 
 <script setup>
 import { computed, ref } from "vue";
-import { createResource, Spinner, Badge, Button } from "frappe-ui";
+import { createResource, Spinner, Badge, Button, FileUploader, ErrorMessage } from "frappe-ui";
 import { dayjsLocal } from "frappe-ui";
 import LucideCheckCircle from "~icons/lucide/check-circle";
 import LucideClock from "~icons/lucide/clock";
@@ -247,6 +316,37 @@ const enquiryDetails = createResource({
 	auto: true,
 });
 
+// Resource to update company logo
+const updateLogoResource = createResource({
+	url: "frappe.client.set_value",
+	makeParams(fileUrl) {
+		// If we have a confirmed sponsor, update the Event Sponsor document
+		if (sponsorDetails.value) {
+			return {
+				doctype: "Event Sponsor",
+				name: sponsorDetails.value.name,
+				fieldname: "company_logo",
+				value: fileUrl,
+			};
+		}
+
+		// If it's still an inquiry, update the Sponsorship Enquiry document
+		return {
+			doctype: "Sponsorship Enquiry",
+			name: props.enquiryId,
+			fieldname: "company_logo",
+			value: fileUrl,
+		};
+	},
+	onSuccess: () => {
+		// Reload the enquiry details to get updated data
+		enquiryDetails.reload();
+	},
+	onError: (err) => {
+		console.error("Failed to update company logo:", err);
+	},
+});
+
 // Use the payment success composable
 const { showSuccessMessage } = usePaymentSuccess({
 	onSuccess: () => {
@@ -258,6 +358,30 @@ const { showSuccessMessage } = usePaymentSuccess({
 // Extract sponsor details from the response
 const sponsorDetails = computed(() => {
 	return enquiryDetails.data?.sponsor_details || null;
+});
+
+// Get the current company logo (from sponsor if confirmed, otherwise from enquiry)
+const currentLogo = computed(() => {
+	if (sponsorDetails.value?.company_logo) {
+		return sponsorDetails.value.company_logo;
+	}
+	return enquiryDetails.data?.enquiry?.company_logo || null;
+});
+
+// Get the company name
+const companyName = computed(() => {
+	if (sponsorDetails.value?.company_name) {
+		return sponsorDetails.value.company_name;
+	}
+	return enquiryDetails.data?.enquiry?.company_name || "";
+});
+
+// Upload arguments for file uploader
+const logoUploadArgs = computed(() => {
+	return {
+		private: false,
+		folder: "Home/Attachments",
+	};
 });
 
 const getStatusTheme = (status) => {
@@ -280,5 +404,36 @@ const formatDate = (dateString) => {
 const onPaymentStarted = () => {
 	// Optional: Show a loading state or toast message
 	console.log("Payment process started");
+};
+
+// Validate that uploaded file is an image
+const validateIsImageFile = (file) => {
+	const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+	const maxSize = 5 * 1024 * 1024; // 5MB
+
+	if (!allowedTypes.includes(file.type)) {
+		return "Please upload a valid image file (JPEG, PNG, GIF, or WebP)";
+	}
+
+	if (file.size > maxSize) {
+		return "File size must be less than 5MB";
+	}
+
+	return null;
+};
+
+// Update logo after successful upload
+const updateLogo = (fileUrl) => {
+	// Update the local data immediately for better UX
+	if (sponsorDetails.value) {
+		// Update sponsor details if it's a confirmed sponsorship
+		sponsorDetails.value.company_logo = fileUrl;
+	} else if (enquiryDetails.data?.enquiry) {
+		// Update enquiry details if it's still an inquiry
+		enquiryDetails.data.enquiry.company_logo = fileUrl;
+	}
+
+	// Update the document field using the resource
+	updateLogoResource.submit(fileUrl);
 };
 </script>
