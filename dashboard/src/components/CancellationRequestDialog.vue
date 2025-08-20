@@ -110,7 +110,8 @@
 						<div>
 							<h4 class="font-semibold text-blue-800">Cancellation Summary</h4>
 							<p class="text-blue-700">
-								{{ selectedTickets.length }} ticket(s) selected for cancellation
+								{{ pluralize(selectedTickets.length, "ticket") }} selected for
+								cancellation
 								<span v-if="isAllSelected" class="font-medium"
 									>(Full booking)</span
 								>
@@ -148,6 +149,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { Dialog, Button, createResource, toast } from "frappe-ui";
+import { pluralize } from "../utils/pluralize.js";
 
 const props = defineProps({
 	modelValue: {
@@ -214,9 +216,7 @@ const createCancellationRequest = createResource({
 			toast.success(
 				isFullCancellation
 					? "Full booking cancellation request submitted successfully!"
-					: `Cancellation request submitted for ${ticketCount} ticket${
-							ticketCount > 1 ? "s" : ""
-					  }!`
+					: `Cancellation request submitted for ${pluralize(ticketCount, "ticket")}!`
 			);
 
 			emit("success", data);
