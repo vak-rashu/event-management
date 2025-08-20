@@ -59,12 +59,29 @@
 				</div>
 			</div>
 
+			<!-- Add-on change restriction notice -->
+			<div
+				v-if="!canChangeAddOns"
+				class="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-4"
+			>
+				<div class="flex items-center">
+					<LucideTriangleAlert class="w-5 h-5 text-orange-600 mr-3" />
+					<div>
+						<p class="text-orange-800 text-sm">
+							<strong>Add-on preference changes are no longer available</strong> -
+							The change window has closed as the event is approaching.
+						</p>
+					</div>
+				</div>
+			</div>
+
 			<ol class="grid grid-cols-3 gap-3">
 				<TicketCard
 					v-for="ticket in bookingDetails.data.tickets"
 					:key="ticket.name"
 					:ticket="ticket"
 					:can-transfer="canTransferTickets"
+					:can-change-add-ons="canChangeAddOns"
 					@transfer-success="onTicketTransferSuccess"
 				/>
 			</ol>
@@ -101,6 +118,10 @@ const bookingDetails = createResource({
 
 const canTransferTickets = computed(() => {
 	return bookingDetails.data?.can_transfer_ticket?.can_transfer || false;
+});
+
+const canChangeAddOns = computed(() => {
+	return bookingDetails.data?.can_change_add_ons?.can_change_add_ons || false;
 });
 
 const onTicketTransferSuccess = () => {

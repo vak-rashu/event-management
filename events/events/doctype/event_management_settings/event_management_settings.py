@@ -15,6 +15,8 @@ class EventManagementSettings(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		allow_add_ons_change_before_event_start_days: DF.Int
+		allow_ticket_cancellation_request_before_event_start_days: DF.Int
 		allow_transfer_ticket_before_event_start_days: DF.Int
 	# end: auto-generated types
 

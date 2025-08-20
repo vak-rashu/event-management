@@ -56,7 +56,7 @@ import { Button, Dropdown } from "frappe-ui";
 import TicketTransferDialog from "./TicketTransferDialog.vue";
 import AddOnPreferenceDialog from "./AddOnPreferenceDialog.vue";
 import LucideUserPen from "~icons/lucide/user-pen";
-import LucideSettings from "~icons/lucide/settings";
+import LucideEdit from "~icons/lucide/edit";
 
 const props = defineProps({
 	ticket: {
@@ -64,6 +64,10 @@ const props = defineProps({
 		required: true,
 	},
 	canTransfer: {
+		type: Boolean,
+		default: false,
+	},
+	canChangeAddOns: {
 		type: Boolean,
 		default: false,
 	},
@@ -95,11 +99,11 @@ const ticketActions = computed(() => {
 		});
 	}
 
-	// Only show preference action if transfers are allowed (same flag) and ticket has customizable add-ons
-	if (props.canTransfer && hasCustomizableAddOns.value) {
+	// Only show preference action if add-on changes are allowed and ticket has customizable add-ons
+	if (props.canChangeAddOns && hasCustomizableAddOns.value) {
 		actions.push({
-			label: "Change Preferences",
-			icon: LucideSettings,
+			label: "Change Add-on Preference",
+			icon: LucideEdit,
 			onClick: () => {
 				showPreferenceDialog.value = true;
 			},

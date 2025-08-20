@@ -33,6 +33,8 @@ class FEEvent(Document):
 		short_description: DF.SmallText | None
 		start_date: DF.Date
 		start_time: DF.Time | None
+		ticket_email_template: DF.Link | None
+		ticket_print_format: DF.Link | None
 		time_zone: DF.Autocomplete | None
 		title: DF.Data
 		venue: DF.Link | None

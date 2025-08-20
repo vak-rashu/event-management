@@ -32,18 +32,6 @@
 				</Button>
 
 				<Button
-					v-if="hasCustomizableAddOns"
-					variant="outline"
-					@click="showAddOnPreferenceDialog = true"
-					size="sm"
-				>
-					<template #prefix>
-						<LucideSettings class="w-4 h-4" />
-					</template>
-					Manage Add-ons
-				</Button>
-
-				<Button
 					v-if="canTransferTicket"
 					variant="outline"
 					@click="showTransferDialog = true"
@@ -54,6 +42,21 @@
 					</template>
 					Transfer
 				</Button>
+			</div>
+		</div>
+
+		<div
+			v-if="hasCustomizableAddOns && !canChangeAddOns"
+			class="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
+		>
+			<div class="flex items-center">
+				<LucideTriangleAlert class="w-5 h-5 text-yellow-600 mr-3" />
+				<div>
+					<p class="text-yellow-800 text-sm">
+						<strong>Add-on preference changes are no longer available</strong> - The
+						change window has closed as the event is approaching.
+					</p>
+				</div>
 			</div>
 		</div>
 
@@ -127,7 +130,20 @@
 				v-if="ticketDetails.data.add_ons && ticketDetails.data.add_ons.length > 0"
 				class="bg-white border border-gray-200 rounded-lg p-6"
 			>
-				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Add-ons</h3>
+				<div class="flex justify-between items-center mb-4">
+					<h3 class="text-ink-gray-8 font-semibold text-lg">Add-ons</h3>
+					<Button
+						v-if="hasCustomizableAddOns && canChangeAddOns"
+						variant="outline"
+						@click="showAddOnPreferenceDialog = true"
+						size="sm"
+					>
+						<template #prefix>
+							<LucideEdit class="w-4 h-4" />
+						</template>
+						Edit
+					</Button>
+				</div>
 
 				<div class="space-y-3">
 					<div
@@ -137,7 +153,7 @@
 					>
 						<div>
 							<p class="font-medium text-ink-gray-9">
-								{{ addon.add_on_title || addon.add_on }}
+								{{ addon.title || addon.name }}
 							</p>
 							<p class="text-sm text-ink-gray-6">{{ addon.value }}</p>
 						</div>
@@ -269,7 +285,8 @@ import TicketTransferDialog from "../components/TicketTransferDialog.vue";
 import AddOnPreferenceDialog from "../components/AddOnPreferenceDialog.vue";
 import LucideDownload from "~icons/lucide/download";
 import LucideUserPlus from "~icons/lucide/user-plus";
-import LucideSettings from "~icons/lucide/settings";
+import LucideEdit from "~icons/lucide/edit";
+import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 
 const props = defineProps({
 	ticketId: {
@@ -377,6 +394,14 @@ const hasCustomizableAddOns = computed(() => {
 	});
 	console.log("Has customizable add-ons:", hasCustomizable);
 	return hasCustomizable;
+});
+
+const canChangeAddOns = computed(() => {
+	if (!ticketDetails.data) return false;
+	return (
+		ticketDetails.data.doc.booking_status === "Confirmed" &&
+		ticketDetails.data.can_change_add_ons?.can_change_add_ons
+	);
 });
 
 const getTicketStatusTheme = (status) => {

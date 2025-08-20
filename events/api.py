@@ -32,10 +32,44 @@ def is_ticket_transfer_allowed(event_id: str | int) -> bool:
 		return False
 
 
+def is_add_on_change_allowed(event_id: str | int) -> bool:
+	"""Check if add-on changes are allowed based on event start date and settings."""
+	try:
+		# Get event details
+		event = frappe.get_cached_doc("FE Event", event_id)
+
+		# Get event management settings
+		settings = frappe.get_cached_doc("Event Management Settings")
+
+		# Default to 7 days if no setting is found
+		add_on_change_cutoff_days = settings.get("allow_add_ons_change_before_event_start_days", 7)
+
+		# Calculate days difference between today and event start date
+		event_start_date = event.start_date
+		if not event_start_date:
+			return False
+
+		# Get days remaining until event starts
+		days_until_event = days_diff(event_start_date, today())
+
+		# Add-on changes are allowed if there are more days remaining than the cutoff
+		return days_until_event >= add_on_change_cutoff_days
+
+	except Exception as e:
+		frappe.log_error(f"Error checking add-on change eligibility: {e!s}")
+		return False
+
+
 @frappe.whitelist()
 def can_transfer_ticket(event_id: str | int) -> dict:
 	"""API endpoint to check if ticket transfer is allowed for an event."""
 	return {"can_transfer": is_ticket_transfer_allowed(event_id), "event_id": event_id}
+
+
+@frappe.whitelist()
+def can_change_add_ons(event_id: str | int) -> dict:
+	"""API endpoint to check if add-on changes are allowed for an event."""
+	return {"can_change_add_ons": is_add_on_change_allowed(event_id), "event_id": event_id}
 
 
 @frappe.whitelist()
@@ -263,6 +297,7 @@ def get_booking_details(booking_id: str) -> dict:
 	details.tickets = tickets
 	details.event = frappe.get_cached_doc("FE Event", booking_doc.event)
 	details.can_transfer_ticket = can_transfer_ticket(details.event.name)
+	details.can_change_add_ons = can_change_add_ons(details.event.name)
 	return details
 
 
@@ -272,6 +307,20 @@ def change_add_on_preference(add_on_id: str, new_value: str):
 	# Validate that the add-on value exists
 	if not frappe.db.exists("Ticket Add-on Value", add_on_id):
 		frappe.throw(frappe._("Add-on value not found."))
+
+	# Get the add-on value to find the associated ticket and event
+	add_on_value = frappe.get_cached_doc("Ticket Add-on Value", add_on_id)
+
+	# Get the ticket to find the event
+	ticket = frappe.get_cached_doc("Event Ticket", add_on_value.parent)
+
+	# Check if add-on changes are allowed for this event
+	if not is_add_on_change_allowed(ticket.event):
+		frappe.throw(
+			frappe._(
+				"Add-on changes are not allowed at this time. The change window has closed as the event is approaching."
+			)
+		)
 
 	frappe.db.set_value(
 		"Ticket Add-on Value",
@@ -488,6 +537,9 @@ def get_ticket_details(ticket_id: str) -> dict:
 	details.ticket_type = frappe.get_cached_doc("Event Ticket Type", ticket_doc.ticket_type)
 	details.can_transfer_ticket = (
 		can_transfer_ticket(details.event.name) if details.event else {"can_transfer": False}
+	)
+	details.can_change_add_ons = (
+		can_change_add_ons(details.event.name) if details.event else {"can_change_add_ons": False}
 	)
 
 	return details

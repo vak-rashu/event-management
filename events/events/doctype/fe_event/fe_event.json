@@ -25,14 +25,19 @@
   "about",
   "tab_2_tab",
   "schedule",
-  "payments_tab",
-  "payment_gateway",
   "website_tab",
   "is_published",
   "route",
   "column_break_ndtl",
   "external_registration_page",
-  "registration_url"
+  "registration_url",
+  "payments_tab",
+  "payment_gateway",
+  "column_break_klhx",
+  "customisations_tab",
+  "ticket_email_template",
+  "column_break_ukql",
+  "ticket_print_format"
  ],
  "fields": [
   {
@@ -185,6 +190,31 @@
   {
    "fieldname": "column_break_ndtl",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_klhx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ticket_print_format",
+   "fieldtype": "Link",
+   "label": "Ticket Print Format",
+   "options": "Print Format"
+  },
+  {
+   "fieldname": "ticket_email_template",
+   "fieldtype": "Link",
+   "label": "Ticket Email Template",
+   "options": "Email Template"
+  },
+  {
+   "fieldname": "customisations_tab",
+   "fieldtype": "Tab Break",
+   "label": "Customisations"
+  },
+  {
+   "fieldname": "column_break_ukql",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
@@ -247,7 +277,7 @@
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-08-14 17:31:17.517873",
+ "modified": "2025-08-20 14:10:18.227171",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",

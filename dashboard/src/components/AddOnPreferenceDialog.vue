@@ -117,7 +117,14 @@ const savePreferences = createResource({
 		show.value = false;
 	},
 	onError: (error) => {
-		toast.error("Failed to update preferences");
+		// Check if this is the specific error about change window closing
+		if (error?.message?.includes("change window has closed")) {
+			toast.error(
+				"Add-on changes are not allowed at this time - the change window has closed as the event is approaching."
+			);
+		} else {
+			toast.error("Failed to update preferences");
+		}
 		console.error("Error updating add-on preferences:", error);
 	},
 });

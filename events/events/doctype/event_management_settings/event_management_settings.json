@@ -6,7 +6,11 @@
  "engine": "InnoDB",
  "field_order": [
   "ticketing_section",
-  "allow_transfer_ticket_before_event_start_days"
+  "allow_transfer_ticket_before_event_start_days",
+  "column_break_ehsr",
+  "allow_add_ons_change_before_event_start_days",
+  "column_break_hagy",
+  "allow_ticket_cancellation_request_before_event_start_days"
  ],
  "fields": [
   {
@@ -20,13 +24,35 @@
    "fieldtype": "Int",
    "label": "Allow Transfer Ticket Before Event Start (Days)",
    "non_negative": 1
+  },
+  {
+   "default": "7",
+   "fieldname": "allow_add_ons_change_before_event_start_days",
+   "fieldtype": "Int",
+   "label": "Allow Add Ons Change Before Event Start (Days)",
+   "non_negative": 1
+  },
+  {
+   "default": "7",
+   "fieldname": "allow_ticket_cancellation_request_before_event_start_days",
+   "fieldtype": "Int",
+   "label": "Allow Ticket Cancellation Request Before Event Start (Days)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_ehsr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hagy",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-17 22:09:52.086386",
+ "modified": "2025-08-20 14:11:51.779767",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "Event Management Settings",
