@@ -1,5 +1,14 @@
 <template>
 	<li class="shadow-md p-4 rounded-lg bg-white relative">
+		<!-- Cancellation Status Badge -->
+		<div v-if="isCancelled" class="absolute top-2 left-2">
+			<span
+				class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+			>
+				Cancellation Requested
+			</span>
+		</div>
+
 		<!-- Three-dot dropdown menu -->
 		<div class="absolute top-2 right-2">
 			<Dropdown :options="ticketActions" placement="left" v-if="ticketActions.length > 0">
@@ -8,7 +17,7 @@
 		</div>
 
 		<div>
-			<h4 class="text-md font-semibold text-gray-800">
+			<h4 class="text-md font-semibold text-gray-800" :class="{ 'mt-6': isCancelled }">
 				{{ ticket.attendee_name }}
 			</h4>
 			<p class="text-sm text-gray-600">Email: {{ ticket.attendee_email }}</p>
@@ -71,6 +80,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isCancelled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(["transfer-success"]);
@@ -87,6 +100,11 @@ const hasCustomizableAddOns = computed(() => {
 
 const ticketActions = computed(() => {
 	const actions = [];
+
+	// Don't show any actions if ticket is cancelled
+	if (props.isCancelled) {
+		return actions;
+	}
 
 	// Only show transfer action if transfers are allowed
 	if (props.canTransfer) {

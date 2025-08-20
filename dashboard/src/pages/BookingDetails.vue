@@ -40,8 +40,61 @@
 		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">
 			Booking Details <span class="text-ink-gray-5 font-mono">(#{{ bookingId }})</span>
 		</h2>
+
+		<!-- Cancellation Request Section -->
+		<div v-if="bookingDetails.data.cancellation_request" class="mb-6">
+			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+				<div class="flex items-center">
+					<LucideInfo class="w-5 h-5 text-blue-600 mr-3" />
+					<div>
+						<h3 class="text-blue-800 font-semibold">Cancellation Requested</h3>
+						<p class="text-blue-700">
+							<span
+								v-if="bookingDetails.data.cancellation_request.cancel_full_booking"
+							>
+								Full booking cancellation has been requested.
+							</span>
+							<span v-else>
+								Partial cancellation has been requested for selected tickets.
+							</span>
+							Request submitted on
+							{{ formatDate(bookingDetails.data.cancellation_request.creation) }}.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div>
-			<h3 class="text-ink-gray-8 font-semibold text-lg mb-3">Tickets</h3>
+			<div class="flex justify-between items-center mb-3">
+				<h3 class="text-ink-gray-8 font-semibold text-lg">Tickets</h3>
+
+				<!-- Request Cancellation Button -->
+				<Button
+					v-if="canRequestCancellation && !bookingDetails.data.cancellation_request"
+					variant="outline"
+					@click="showCancellationDialog = true"
+					class="text-red-600 border-red-300 hover:bg-red-50"
+				>
+					Request Cancellation
+				</Button>
+			</div>
+
+			<!-- Cancellation restriction notice -->
+			<div
+				v-if="!canRequestCancellation && !bookingDetails.data.cancellation_request"
+				class="mb-4 bg-red-50 border border-red-200 rounded-lg p-4"
+			>
+				<div class="flex items-center">
+					<LucideTriangleAlert class="w-5 h-5 text-red-600 mr-3" />
+					<div>
+						<p class="text-red-800 text-sm">
+							<strong>Ticket cancellation requests are no longer available</strong> -
+							The cancellation window has closed as the event is approaching.
+						</p>
+					</div>
+				</div>
+			</div>
 
 			<!-- Transfer restriction notice -->
 			<div
@@ -82,21 +135,31 @@
 					:ticket="ticket"
 					:can-transfer="canTransferTickets"
 					:can-change-add-ons="canChangeAddOns"
+					:is-cancelled="isCancelledTicket(ticket.name)"
 					@transfer-success="onTicketTransferSuccess"
 				/>
 			</ol>
 		</div>
+
+		<CancellationRequestDialog
+			v-model="showCancellationDialog"
+			:tickets="bookingDetails.data.tickets"
+			:booking-id="bookingId"
+			@success="onCancellationRequestSuccess"
+		/>
 	</div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { createResource, Spinner } from "frappe-ui";
+import { createResource, Spinner, Button } from "frappe-ui";
 import { triggerCelebrationConfetti } from "../utils/confetti.js";
 import TicketCard from "../components/TicketCard.vue";
+import CancellationRequestDialog from "../components/CancellationRequestDialog.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 import LucideCheckCircle from "~icons/lucide/check-circle";
+import LucideInfo from "~icons/lucide/info";
 
 const route = useRoute();
 const router = useRouter();
@@ -109,6 +172,7 @@ const props = defineProps({
 });
 
 const showSuccessMessage = ref(false);
+const showCancellationDialog = ref(false);
 
 const bookingDetails = createResource({
 	url: "events.api.get_booking_details",
@@ -124,7 +188,23 @@ const canChangeAddOns = computed(() => {
 	return bookingDetails.data?.can_change_add_ons?.can_change_add_ons || false;
 });
 
+const canRequestCancellation = computed(() => {
+	return bookingDetails.data?.can_request_cancellation?.can_request_cancellation || false;
+});
+
+const isCancelledTicket = (ticketId) => {
+	return bookingDetails.data?.cancelled_tickets?.includes(ticketId) || false;
+};
+
+const formatDate = (dateString) => {
+	return new Date(dateString).toLocaleDateString();
+};
+
 const onTicketTransferSuccess = () => {
+	bookingDetails.reload();
+};
+
+const onCancellationRequestSuccess = (data) => {
 	bookingDetails.reload();
 };
 

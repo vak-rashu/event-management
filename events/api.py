@@ -72,6 +72,42 @@ def can_change_add_ons(event_id: str | int) -> dict:
 	return {"can_change_add_ons": is_add_on_change_allowed(event_id), "event_id": event_id}
 
 
+def is_cancellation_request_allowed(event_id: str | int) -> bool:
+	"""Check if cancellation request is allowed based on event start date and settings."""
+	try:
+		# Get event details
+		event = frappe.get_cached_doc("FE Event", event_id)
+
+		# Get event management settings
+		settings = frappe.get_cached_doc("Event Management Settings")
+
+		# Default to 7 days if no setting is found
+		cancellation_cutoff_days = settings.get(
+			"allow_ticket_cancellation_request_before_event_start_days", 7
+		)
+
+		# Calculate days difference between today and event start date
+		event_start_date = event.start_date
+		if not event_start_date:
+			return False
+
+		# Get days remaining until event starts
+		days_until_event = days_diff(event_start_date, today())
+
+		# Cancellation request is allowed if there are more days remaining than the cutoff
+		return days_until_event >= cancellation_cutoff_days
+
+	except Exception as e:
+		frappe.log_error(f"Error checking cancellation request eligibility: {e!s}")
+		return False
+
+
+@frappe.whitelist()
+def can_request_cancellation(event_id: str | int) -> dict:
+	"""API endpoint to check if cancellation request is allowed for an event."""
+	return {"can_request_cancellation": is_cancellation_request_allowed(event_id), "event_id": event_id}
+
+
 @frappe.whitelist()
 def get_event_booking_data(event_route: str) -> dict:
 	data = frappe._dict()
@@ -298,6 +334,31 @@ def get_booking_details(booking_id: str) -> dict:
 	details.event = frappe.get_cached_doc("FE Event", booking_doc.event)
 	details.can_transfer_ticket = can_transfer_ticket(details.event.name)
 	details.can_change_add_ons = can_change_add_ons(details.event.name)
+	details.can_request_cancellation = can_request_cancellation(details.event.name)
+
+	# Check for existing cancellation request
+	existing_cancellation = frappe.db.get_value(
+		"Ticket Cancellation Request",
+		{"booking": booking_id},
+		["name", "cancel_full_booking", "creation"],
+		as_dict=True,
+	)
+	details.cancellation_request = existing_cancellation
+
+	# If there's a cancellation request, determine which tickets are cancelled
+	if existing_cancellation:
+		if existing_cancellation.cancel_full_booking:
+			# If full booking cancellation, all tickets are considered cancelled
+			details.cancelled_tickets = [ticket.name for ticket in tickets]
+		else:
+			# If partial cancellation, get specific tickets
+			cancelled_tickets = frappe.db.get_all(
+				"Ticket Cancellation Item", filters={"parent": existing_cancellation.name}, fields=["ticket"]
+			)
+			details.cancelled_tickets = [item.ticket for item in cancelled_tickets]
+	else:
+		details.cancelled_tickets = []
+
 	return details
 
 
@@ -541,5 +602,51 @@ def get_ticket_details(ticket_id: str) -> dict:
 	details.can_change_add_ons = (
 		can_change_add_ons(details.event.name) if details.event else {"can_change_add_ons": False}
 	)
+	details.can_request_cancellation = (
+		can_request_cancellation(details.event.name) if details.event else {"can_request_cancellation": False}
+	)
 
 	return details
+
+
+@frappe.whitelist()
+def create_cancellation_request(booking_id: str, ticket_ids: list | None = None) -> dict:
+	"""Create a cancellation request for a booking and optionally specific tickets."""
+	# Get booking details
+	booking_doc = frappe.get_cached_doc("Event Booking", booking_id)
+
+	# Check if cancellation request is allowed for this event
+	if not is_cancellation_request_allowed(booking_doc.event):
+		frappe.throw("Cancellation requests are no longer allowed for this event.")
+
+	# Check if a cancellation request already exists for this booking
+	existing_request = frappe.db.exists("Ticket Cancellation Request", {"booking": booking_id})
+	if existing_request:
+		frappe.throw("A cancellation request already exists for this booking.")
+
+	# Determine if this is a full booking cancellation
+	all_tickets = frappe.db.get_all("Event Ticket", filters={"booking": booking_id}, fields=["name"])
+	cancel_full_booking = not ticket_ids or len(ticket_ids) == len(all_tickets)
+
+	# Create the cancellation request
+	cancellation_request = frappe.new_doc("Ticket Cancellation Request")
+	cancellation_request.booking = booking_id
+	cancellation_request.cancel_full_booking = cancel_full_booking
+
+	# If not full booking cancellation, add specific tickets to the child table
+	if not cancel_full_booking and ticket_ids:
+		for ticket_id in ticket_ids:
+			# Verify ticket belongs to this booking
+			ticket_booking = frappe.db.get_value("Event Ticket", ticket_id, "booking")
+			if ticket_booking != booking_id:
+				frappe.throw(f"Ticket {ticket_id} does not belong to booking {booking_id}")
+
+			cancellation_request.append("tickets", {"ticket": ticket_id})
+
+	cancellation_request.insert(ignore_permissions=True)
+
+	return {
+		"success": True,
+		"message": "Cancellation request submitted successfully.",
+		"cancellation_request": cancellation_request.name,
+	}
