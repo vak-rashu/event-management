@@ -442,7 +442,35 @@ def get_ticket_details(ticket_id: str) -> dict:
 		fields=["name", "add_on", "add_on.title as add_on_title", "value", "price", "currency"],
 	)
 
-	details.add_ons = add_ons
+	# Get available options for add-ons (for preference management)
+	event_add_ons = frappe.db.get_all(
+		"Ticket Add-on",
+		filters={"event": ticket_doc.event, "user_selects_option": True},
+		fields=["name", "title", "user_selects_option", "options"],
+	)
+
+	add_on_options_map = {}
+	for event_add_on in event_add_ons:
+		if event_add_on.user_selects_option:
+			add_on_options_map[event_add_on.name] = (
+				event_add_on.options.split("\n") if event_add_on.options else []
+			)
+
+	# Enhance add-ons data with options
+	enhanced_add_ons = []
+	for add_on in add_ons:
+		add_on_data = {
+			"id": add_on.name,
+			"name": add_on.add_on,
+			"title": add_on.add_on_title,
+			"value": add_on.value,
+			"price": add_on.price,
+			"currency": add_on.currency,
+			"options": add_on_options_map.get(add_on.add_on, []),
+		}
+		enhanced_add_ons.append(add_on_data)
+
+	details.add_ons = enhanced_add_ons
 	details.event = frappe.get_cached_doc("FE Event", ticket_doc.event)
 
 	# Only include booking information if the current user is the owner of the booking

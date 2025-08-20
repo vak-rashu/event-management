@@ -32,6 +32,18 @@
 				</Button>
 
 				<Button
+					v-if="hasCustomizableAddOns"
+					variant="outline"
+					@click="showAddOnPreferenceDialog = true"
+					size="sm"
+				>
+					<template #prefix>
+						<LucideSettings class="w-4 h-4" />
+					</template>
+					Manage Add-ons
+				</Button>
+
+				<Button
 					v-if="canTransferTicket"
 					variant="outline"
 					@click="showTransferDialog = true"
@@ -238,6 +250,13 @@
 			:ticket="ticketDetails.data.doc"
 			@success="onTicketTransferSuccess"
 		/>
+
+		<!-- Add-on Preference Dialog -->
+		<AddOnPreferenceDialog
+			v-model="showAddOnPreferenceDialog"
+			:ticket="{ ...ticketDetails.data.doc, add_ons: ticketDetails.data.add_ons }"
+			@success="onAddOnPreferenceSuccess"
+		/>
 	</div>
 </template>
 
@@ -247,9 +266,10 @@ import { createResource, Spinner, Button, Badge } from "frappe-ui";
 import { formatCurrency } from "../utils/currency";
 import { dayjsLocal } from "frappe-ui";
 import TicketTransferDialog from "../components/TicketTransferDialog.vue";
+import AddOnPreferenceDialog from "../components/AddOnPreferenceDialog.vue";
 import LucideDownload from "~icons/lucide/download";
 import LucideUserPlus from "~icons/lucide/user-plus";
-import LucideInfo from "~icons/lucide/info";
+import LucideSettings from "~icons/lucide/settings";
 
 const props = defineProps({
 	ticketId: {
@@ -279,6 +299,7 @@ const formatEventDateTime = (date, time) => {
 
 const downloadingTicket = ref(false);
 const showTransferDialog = ref(false);
+const showAddOnPreferenceDialog = ref(false);
 
 const ticketDetails = createResource({
 	url: "events.api.get_ticket_details",
@@ -338,6 +359,26 @@ const canTransferTicket = computed(() => {
 	);
 });
 
+const hasCustomizableAddOns = computed(() => {
+	if (!ticketDetails.data?.add_ons) {
+		console.log("No add_ons data found:", ticketDetails.data);
+		return false;
+	}
+
+	console.log("Add-ons data:", ticketDetails.data.add_ons);
+	const hasCustomizable = ticketDetails.data.add_ons.some((addon) => {
+		console.log(
+			"Checking addon:",
+			addon,
+			"has options:",
+			addon.options && addon.options.length > 0
+		);
+		return addon.options && addon.options.length > 0;
+	});
+	console.log("Has customizable add-ons:", hasCustomizable);
+	return hasCustomizable;
+});
+
 const getTicketStatusTheme = (status) => {
 	switch (status) {
 		case "Confirmed":
@@ -353,6 +394,10 @@ const getTicketStatusTheme = (status) => {
 };
 
 const onTicketTransferSuccess = () => {
+	ticketDetails.reload();
+};
+
+const onAddOnPreferenceSuccess = () => {
 	ticketDetails.reload();
 };
 
