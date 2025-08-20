@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-20 15:20:06.899417",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "booking",
+  "cancel_full_booking",
+  "tickets"
+ ],
+ "fields": [
+  {
+   "fieldname": "booking",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Booking",
+   "options": "Event Booking",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "cancel_full_booking",
+   "fieldtype": "Check",
+   "label": "Cancel Full Booking?"
+  },
+  {
+   "depends_on": "eval:doc.cancel_full_booking==0",
+   "fieldname": "tickets",
+   "fieldtype": "Table",
+   "label": "Tickets",
+   "mandatory_depends_on": "eval:doc.cancel_full_booking==0",
+   "options": "Ticket Cancellation Item"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-20 15:23:19.698185",
+ "modified_by": "Administrator",
+ "module": "Ticketing",
+ "name": "Ticket Cancellation Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
