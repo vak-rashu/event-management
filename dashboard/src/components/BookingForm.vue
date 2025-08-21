@@ -30,7 +30,7 @@
 
 			<!-- Right Side: Summary and Submit -->
 			<div class="lg:col-span-1">
-				<div class="sticky top-4">
+				<div class="sticky top-4 w-full">
 					<BookingSummary
 						:summary="summary"
 						:net-amount="netAmount"
@@ -40,15 +40,17 @@
 						:total="finalTotal"
 						:total-currency="totalCurrency"
 					/>
-					<Button
-						variant="solid"
-						size="lg"
-						class="w-full mt-3"
-						type="submit"
-						:loading="processBooking.loading"
-					>
-						{{ processBooking.loading ? "Processing..." : "Pay & Book" }}
-					</Button>
+					<div class="w-full">
+						<Button
+							variant="solid"
+							size="lg"
+							class="w-full mt-3"
+							type="submit"
+							:loading="processBooking.loading"
+						>
+							{{ processBooking.loading ? "Processing..." : "Pay & Book" }}
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -57,10 +59,10 @@
 
 <script setup>
 import { computed, watch } from "vue";
-import { useStorage } from "@vueuse/core";
 import AttendeeFormControl from "./AttendeeFormControl.vue";
 import BookingSummary from "./BookingSummary.vue";
 import { createResource } from "frappe-ui";
+import { useBookingFormStorage } from "../composables/useBookingFormStorage.js";
 
 // Props are passed from the parent context (e.g., your main app or page)
 const props = defineProps({
@@ -82,9 +84,8 @@ const props = defineProps({
 });
 
 // --- STATE ---
-// Use localStorage to persist attendees data across page refreshes
-const attendees = useStorage("event-booking-attendees", []);
-const attendeeIdCounter = useStorage("event-booking-counter", 0);
+// Use the booking form storage composable
+const { attendees, attendeeIdCounter, clearStoredData } = useBookingFormStorage();
 
 // --- HELPERS / DERIVED STATE ---
 const addOnsMap = computed(() =>
@@ -120,12 +121,6 @@ const addAttendee = () => {
 
 const removeAttendee = (index) => {
 	attendees.value.splice(index, 1);
-};
-
-// Clear stored data (useful after successful booking)
-const clearStoredData = () => {
-	attendees.value = [];
-	attendeeIdCounter.value = 0;
 };
 
 // --- COMPUTED PROPERTIES FOR SUMMARY ---
@@ -273,8 +268,8 @@ async function submit() {
 
 	processBooking.submit(final_payload, {
 		onSuccess: (data) => {
-			// Clear stored data after successful booking
-			clearStoredData();
+			// Redirect to payment page, don't clear data yet
+			// Data will be cleared when payment is successful
 			window.location.href = data;
 		},
 	});

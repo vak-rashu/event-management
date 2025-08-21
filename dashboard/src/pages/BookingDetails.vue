@@ -151,18 +151,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, computed } from "vue";
 import { createResource, Spinner, Button } from "frappe-ui";
-import { triggerCelebrationConfetti } from "../utils/confetti.js";
+import { usePaymentSuccess } from "../composables/usePaymentSuccess.js";
+import { useBookingFormStorage } from "../composables/useBookingFormStorage.js";
 import TicketCard from "../components/TicketCard.vue";
 import CancellationRequestDialog from "../components/CancellationRequestDialog.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 import LucideCheckCircle from "~icons/lucide/check-circle";
 import LucideInfo from "~icons/lucide/info";
-
-const route = useRoute();
-const router = useRouter();
 
 const props = defineProps({
 	bookingId: {
@@ -171,7 +168,17 @@ const props = defineProps({
 	},
 });
 
-const showSuccessMessage = ref(false);
+// Use booking form storage composable to clear data on successful payment
+const { clearStoredData } = useBookingFormStorage();
+
+// Use payment success composable with callback to clear booking form data
+const { showSuccessMessage } = usePaymentSuccess({
+	onSuccess: () => {
+		// Clear any stored booking form data when payment is successful
+		clearStoredData();
+	},
+});
+
 const showCancellationDialog = ref(false);
 
 const bookingDetails = createResource({
@@ -207,25 +214,4 @@ const onTicketTransferSuccess = () => {
 const onCancellationRequestSuccess = (data) => {
 	bookingDetails.reload();
 };
-
-// Check if this is a successful payment redirect
-onMounted(() => {
-	if (route.query.success === "true") {
-		showSuccessMessage.value = true;
-
-		// Trigger confetti animation
-		triggerCelebrationConfetti();
-
-		// Clean up the URL by removing the success parameter
-		router.replace({
-			name: route.name,
-			params: route.params,
-		});
-
-		// Hide success message after 10 seconds
-		setTimeout(() => {
-			showSuccessMessage.value = false;
-		}, 10000);
-	}
-});
 </script>
