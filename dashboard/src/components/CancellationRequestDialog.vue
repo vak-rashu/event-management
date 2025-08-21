@@ -209,30 +209,22 @@ const createCancellationRequest = createResource({
 	url: "events.api.create_cancellation_request",
 	onSuccess: (data) => {
 		submitting.value = false;
-		if (data.success) {
-			const ticketCount = selectedTickets.value.length;
-			const isFullCancellation = isAllSelected.value;
 
-			toast.success(
-				isFullCancellation
-					? "Full booking cancellation request submitted successfully!"
-					: `Cancellation request submitted for ${pluralize(ticketCount, "ticket")}!`
-			);
+		const ticketCount = selectedTickets.value.length;
+		const isFullCancellation = isAllSelected.value;
 
-			emit("success", data);
-			closeDialog();
-		} else {
-			toast.error(
-				data.message || "Failed to submit cancellation request. Please try again."
-			);
-		}
+		toast.success(
+			isFullCancellation
+				? "Full booking cancellation request submitted successfully!"
+				: `Cancellation request submitted for ${pluralize(ticketCount, "ticket")}!`
+		);
+		emit("success", data);
+		closeDialog();
 	},
+
 	onError: (error) => {
 		submitting.value = false;
-		console.error("Error creating cancellation request:", error);
-		toast.error(
-			"An error occurred while submitting the cancellation request. Please try again."
-		);
+		toast.error(data.message || "Failed to submit cancellation request. Please try again.");
 	},
 });
 

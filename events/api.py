@@ -652,9 +652,3 @@ def create_cancellation_request(booking_id: str, ticket_ids: list | None = None)
 			cancellation_request.append("tickets", {"ticket": ticket_id})
 
 	cancellation_request.insert(ignore_permissions=True)
-
-	return {
-		"success": True,
-		"message": "Cancellation request submitted successfully.",
-		"cancellation_request": cancellation_request.name,
-	}
