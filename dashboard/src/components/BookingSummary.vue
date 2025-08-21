@@ -37,7 +37,20 @@
 
 		<hr class="my-4 border-t border-gray-200" />
 
-		<!-- Total Section -->
+		<!-- Subtotal -->
+		<div class="flex justify-between items-center text-gray-700 mb-2">
+			<span>Subtotal</span>
+			<span class="font-medium">{{ formatPrice(netAmount, totalCurrency) }}</span>
+		</div>
+
+		<!-- GST Section -->
+		<div v-if="shouldApplyGst" class="flex justify-between items-center text-gray-700 mb-2">
+			<span>GST ({{ taxPercentage }}%)</span>
+			<span class="font-medium">{{ formatPrice(taxAmount, totalCurrency) }}</span>
+		</div>
+
+		<!-- Final Total Section -->
+		<hr v-if="shouldApplyGst" class="my-2 border-t border-gray-200" />
 		<div class="flex justify-between items-center text-xl font-bold text-gray-900">
 			<h3>Total</h3>
 			<span>{{ formatPrice(total, totalCurrency) }}</span>
@@ -52,6 +65,22 @@ defineProps({
 	summary: {
 		type: Object,
 		required: true,
+	},
+	netAmount: {
+		type: Number,
+		required: true,
+	},
+	taxAmount: {
+		type: Number,
+		default: 0,
+	},
+	taxPercentage: {
+		type: Number,
+		default: 0,
+	},
+	shouldApplyGst: {
+		type: Boolean,
+		default: false,
 	},
 	total: {
 		type: Number,

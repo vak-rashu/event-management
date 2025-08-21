@@ -33,7 +33,11 @@
 				<div class="sticky top-4">
 					<BookingSummary
 						:summary="summary"
-						:total="total"
+						:net-amount="netAmount"
+						:tax-amount="taxAmount"
+						:tax-percentage="taxPercentage"
+						:should-apply-gst="shouldApplyGST"
+						:total="finalTotal"
 						:total-currency="totalCurrency"
 					/>
 					<Button
@@ -67,6 +71,13 @@ const props = defineProps({
 	availableTicketTypes: {
 		type: Array,
 		default: () => [],
+	},
+	gstSettings: {
+		type: Object,
+		default: () => ({
+			apply_gst_on_bookings: false,
+			gst_percentage: 18,
+		}),
 	},
 });
 
@@ -167,6 +178,26 @@ const total = computed(() => {
 		currentTotal += summary.value.add_ons[key].amount;
 	}
 	return currentTotal;
+});
+
+// Net amount (before tax)
+const netAmount = computed(() => total.value);
+
+// Tax calculations
+const shouldApplyGST = computed(() => {
+	return props.gstSettings?.apply_gst_on_bookings && totalCurrency.value === "INR";
+});
+
+const taxPercentage = computed(() => {
+	return shouldApplyGST.value ? props.gstSettings?.gst_percentage || 18 : 0;
+});
+
+const taxAmount = computed(() => {
+	return shouldApplyGST.value ? (netAmount.value * taxPercentage.value) / 100 : 0;
+});
+
+const finalTotal = computed(() => {
+	return netAmount.value + taxAmount.value;
 });
 
 // Determine the primary currency for the total (use the first ticket type's currency)

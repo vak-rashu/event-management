@@ -136,6 +136,14 @@ def get_event_booking_data(event_route: str) -> dict:
 			add_on.options = add_on.options.split("\n")
 
 	data.available_add_ons = add_ons
+
+	# GST Settings
+	event_settings = frappe.get_cached_doc("Event Management Settings")
+	data.gst_settings = {
+		"apply_gst_on_bookings": event_settings.apply_gst_on_bookings,
+		"gst_percentage": event_settings.gst_percentage or 18,
+	}
+
 	return data
 
 
