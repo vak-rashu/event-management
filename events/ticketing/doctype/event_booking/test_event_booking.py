@@ -10,6 +10,9 @@ from frappe.tests import IntegrationTestCase
 EXTRA_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 
+TEST_ADD_ON_PRICE = 100
+TEST_VIP_TICKET_TYPE_PRICE = 500
+
 
 class IntegrationTestEventBooking(IntegrationTestCase):
 	"""
@@ -17,11 +20,13 @@ class IntegrationTestEventBooking(IntegrationTestCase):
 	Use this class for testing interactions between multiple components.
 	"""
 
-	def test_total_calculation(self):
-		TEST_ADD_ON_PRICE = 100
-		TEST_VIP_TICKET_TYPE_PRICE = 500
-
+	def test_total_calculation_without_taxes(self):
 		test_event = frappe.get_doc("FE Event", {"route": "test-route"})
+
+		# Turn off GST for this test
+		event_settings = frappe.get_doc("Event Management Settings")
+		event_settings.apply_gst_on_bookings = False
+		event_settings.save()
 
 		test_ticket_add_on = frappe.get_doc(
 			{
@@ -69,7 +74,43 @@ class IntegrationTestEventBooking(IntegrationTestCase):
 		# with one add-on
 		self.assertEqual(test_booking.attendees[0].number_of_add_ons, 1)
 		self.assertEqual(test_booking.attendees[0].add_on_total, TEST_ADD_ON_PRICE)
+		self.assertEqual(test_booking.net_amount, 1100)
 		self.assertEqual(test_booking.total_amount, 1100)
+
+	def test_total_calculation_with_taxes(self):
+		test_event = frappe.get_doc("FE Event", {"route": "test-route"})
+
+		# Turn on GST for this test
+		event_settings = frappe.get_doc("Event Management Settings")
+		event_settings.apply_gst_on_bookings = True
+		event_settings.gst_percentage = 18
+		event_settings.save()
+
+		test_ticket_type = frappe.get_doc(
+			{
+				"doctype": "Event Ticket Type",
+				"event": test_event.name,
+				"title": "VIP",
+				"price": TEST_VIP_TICKET_TYPE_PRICE,
+			}
+		).insert()
+
+		test_booking = frappe.get_doc(
+			{
+				"doctype": "Event Booking",
+				"event": test_event.name,
+				"user": "Administrator",
+				"attendees": [
+					{"ticket_type": test_ticket_type.name, "full_name": "John", "email": "john@email.com"},
+					{"ticket_type": test_ticket_type.name, "full_name": "Jenny", "email": "jenny@email.com"},
+				],
+			}
+		).insert()
+
+		self.assertEqual(test_booking.net_amount, 1000)
+		self.assertEqual(test_booking.tax_percentage, 18)
+		self.assertEqual(test_booking.tax_amount, 180)
+		self.assertEqual(test_booking.total_amount, 1180)
 
 	def test_prevents_booking_if_tickets_unavailable(self):
 		test_event = frappe.get_doc("FE Event", {"route": "test-route"})

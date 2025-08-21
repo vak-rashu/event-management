@@ -11,8 +11,11 @@
   "section_break_xvkp",
   "attendees",
   "section_break_tsys",
-  "total_amount",
+  "net_amount",
+  "tax_percentage",
+  "tax_amount",
   "column_break_naeh",
+  "total_amount",
   "currency",
   "section_break_sdfp",
   "amended_from"
@@ -87,6 +90,27 @@
    "options": "Currency",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "tax_percentage",
+   "fieldtype": "Percent",
+   "label": "Tax Percentage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "label": "Tax Amount",
+   "options": "currency",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -102,7 +126,7 @@
    "link_fieldname": "reference_docname"
   }
  ],
- "modified": "2025-07-31 19:56:55.370301",
+ "modified": "2025-08-21 11:23:45.681388",
  "modified_by": "Administrator",
  "module": "Ticketing",
  "name": "Event Booking",

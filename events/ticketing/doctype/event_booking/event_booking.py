@@ -26,26 +26,43 @@ class EventBooking(Document):
 		attendees: DF.Table[EventBookingAttendee]
 		currency: DF.Link
 		event: DF.Link
+		net_amount: DF.Currency
+		tax_amount: DF.Currency
+		tax_percentage: DF.Percent
 		total_amount: DF.Currency
 		user: DF.Link
 	# end: auto-generated types
 
 	def validate(self):
-		self.set_total()
-		self.set_currency()
 		self.validate_ticket_availability()
+		self.fetch_amounts_from_ticket_types()
+		self.set_currency()
+		self.set_total()
+		self.apply_taxes_if_applicable()
 
 	def set_currency(self):
 		self.currency = self.attendees[0].currency
 
 	def set_total(self):
-		self.total_amount = 0
+		self.net_amount = 0
 		for attendee in self.attendees:
-			self.total_amount += attendee.amount
+			self.net_amount += attendee.amount
 			if attendee.add_ons:
 				attendee.add_on_total = attendee.get_add_on_total()
 				attendee.number_of_add_ons = attendee.get_number_of_add_ons()
-				self.total_amount += attendee.add_on_total
+				self.net_amount += attendee.add_on_total
+		self.total_amount = self.net_amount
+
+	def apply_taxes_if_applicable(self):
+		if self.currency != "INR":
+			return
+
+		event_settings = frappe.get_cached_doc("Event Management Settings")
+		to_apply_gst = event_settings.apply_gst_on_bookings
+		if to_apply_gst:
+			self.tax_percentage = event_settings.gst_percentage or 18
+			self.tax_amount = self.net_amount * (self.tax_percentage / 100)
+			self.total_amount += self.tax_amount
 
 	def validate_ticket_availability(self):
 		num_tickets_by_type = {}
@@ -65,6 +82,16 @@ class EventBooking(Document):
 						f"Only {ticket_type_doc.remaining_tickets} tickets available for {ticket_type}, you are trying to book {num_tickets}!"
 					)
 				)
+
+	def fetch_amounts_from_ticket_types(self):
+		for attendee in self.attendees:
+			price, currency = frappe.get_cached_value(
+				"Event Ticket Type", attendee.ticket_type, ["price", "currency"]
+			)
+			if attendee.amount is None:
+				attendee.amount = price
+			if not attendee.currency:
+				attendee.currency = currency
 
 	def on_submit(self):
 		self.generate_tickets()
