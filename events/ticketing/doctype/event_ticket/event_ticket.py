@@ -52,7 +52,7 @@ class EventTicket(Document):
 				"attached_to_field": "qr_code",
 				"file_name": f"ticket-qr-code-{self.name}.png",
 			}
-		).save()
+		).save(ignore_permissions=True)
 		self.qr_code = qr_code_file.file_url
 
 
