@@ -41,6 +41,21 @@
 			Booking Details <span class="text-ink-gray-5 font-mono">(#{{ bookingId }})</span>
 		</h2>
 
+		<!-- Event Information -->
+		<BookingEventInfo v-if="bookingDetails.data.event" :event="bookingDetails.data.event" />
+
+		<!-- Booking Financial Summary -->
+		<BookingFinancialSummary
+			v-if="bookingDetails.data.doc"
+			:booking="bookingDetails.data.doc"
+		/>
+
+		<!-- Booking Financial Summary -->
+		<BookingFinancialSummary
+			v-if="bookingDetails.data.booking_summary"
+			:summary="bookingDetails.data.booking_summary"
+		/>
+
 		<!-- Cancellation Request Section -->
 		<div v-if="bookingDetails.data.cancellation_request" class="mb-6">
 			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -65,9 +80,10 @@
 			</div>
 		</div>
 
-		<div>
-			<div class="flex justify-between items-center mb-3">
-				<h3 class="text-ink-gray-8 font-semibold text-lg">Tickets</h3>
+		<!-- Tickets Section -->
+		<div class="bg-white border border-gray-200 rounded-lg p-6">
+			<div class="flex justify-between items-center mb-4">
+				<h3 class="text-lg font-semibold text-ink-gray-9">Your Tickets</h3>
 
 				<!-- Request Cancellation Button -->
 				<Button
@@ -80,55 +96,56 @@
 				</Button>
 			</div>
 
-			<!-- Cancellation restriction notice -->
+			<!-- Restriction notices -->
 			<div
 				v-if="!canRequestCancellation && !bookingDetails.data.cancellation_request"
-				class="mb-4 bg-red-50 border border-red-200 rounded-lg p-4"
+				class="mb-4"
 			>
-				<div class="flex items-center">
-					<LucideTriangleAlert class="w-5 h-5 text-red-600 mr-3" />
-					<div>
-						<p class="text-red-800 text-sm">
-							<strong>Ticket cancellation requests are no longer available</strong> -
-							The cancellation window has closed as the event is approaching.
-						</p>
+				<div class="bg-red-50 border border-red-200 rounded-lg p-4">
+					<div class="flex items-center">
+						<LucideTriangleAlert class="w-5 h-5 text-red-600 mr-3" />
+						<div>
+							<p class="text-red-800 text-sm">
+								<strong
+									>Ticket cancellation requests are no longer available</strong
+								>
+								- The cancellation window has closed as the event is approaching.
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Transfer restriction notice -->
-			<div
-				v-if="!canTransferTickets"
-				class="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
-			>
-				<div class="flex items-center">
-					<LucideTriangleAlert class="w-5 h-5 text-yellow-600 mr-3" />
-					<div>
-						<p class="text-yellow-800 text-sm">
-							<strong>Ticket transfers are no longer available</strong> - The
-							transfer window has closed as the event is approaching.
-						</p>
+			<div v-if="!canTransferTickets" class="mb-4">
+				<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+					<div class="flex items-center">
+						<LucideTriangleAlert class="w-5 h-5 text-yellow-600 mr-3" />
+						<div>
+							<p class="text-yellow-800 text-sm">
+								<strong>Ticket transfers are no longer available</strong> - The
+								transfer window has closed as the event is approaching.
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- Add-on change restriction notice -->
-			<div
-				v-if="!canChangeAddOns"
-				class="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-4"
-			>
-				<div class="flex items-center">
-					<LucideTriangleAlert class="w-5 h-5 text-orange-600 mr-3" />
-					<div>
-						<p class="text-orange-800 text-sm">
-							<strong>Add-on preference changes are no longer available</strong> -
-							The change window has closed as the event is approaching.
-						</p>
+			<div v-if="!canChangeAddOns" class="mb-4">
+				<div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+					<div class="flex items-center">
+						<LucideTriangleAlert class="w-5 h-5 text-orange-600 mr-3" />
+						<div>
+							<p class="text-orange-800 text-sm">
+								<strong>Add-on preference changes are no longer available</strong>
+								- The change window has closed as the event is approaching.
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<ol class="grid grid-cols-3 gap-3">
+			<!-- Tickets Grid -->
+			<ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<TicketCard
 					v-for="ticket in bookingDetails.data.tickets"
 					:key="ticket.name"
@@ -157,6 +174,8 @@ import { usePaymentSuccess } from "../composables/usePaymentSuccess.js";
 import { useBookingFormStorage } from "../composables/useBookingFormStorage.js";
 import TicketCard from "../components/TicketCard.vue";
 import CancellationRequestDialog from "../components/CancellationRequestDialog.vue";
+import BookingFinancialSummary from "../components/BookingFinancialSummary.vue";
+import BookingEventInfo from "../components/BookingEventInfo.vue";
 import LucideTriangleAlert from "~icons/lucide/triangle-alert";
 import LucideCheckCircle from "~icons/lucide/check-circle";
 import LucideInfo from "~icons/lucide/info";

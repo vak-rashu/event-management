@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">Your Bookings</h2>
 		<ListView
 			v-if="bookings.data"
 			:columns="columns"

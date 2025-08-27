@@ -41,13 +41,8 @@ const routes = [
 	{
 		path: "/account",
 		component: () => import("@/pages/Account.vue"),
-		redirect: { name: "profile" },
+		redirect: { name: "bookings-list" },
 		children: [
-			{
-				path: "",
-				name: "profile",
-				component: () => import("@/pages/Profile.vue"),
-			},
 			{
 				path: "bookings",
 				name: "bookings-list",
@@ -94,7 +89,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
 	let isLoggedIn = session.isLoggedIn;
 	try {
-		await userResource.promise;
+		await userResource.fetch();
 	} catch (error) {
 		isLoggedIn = false;
 	}

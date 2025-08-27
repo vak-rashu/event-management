@@ -209,7 +209,6 @@ const createCancellationRequest = createResource({
 	url: "events.api.create_cancellation_request",
 	onSuccess: (data) => {
 		submitting.value = false;
-
 		const ticketCount = selectedTickets.value.length;
 		const isFullCancellation = isAllSelected.value;
 
@@ -221,7 +220,6 @@ const createCancellationRequest = createResource({
 		emit("success", data);
 		closeDialog();
 	},
-
 	onError: (error) => {
 		submitting.value = false;
 		toast.error(data.message || "Failed to submit cancellation request. Please try again.");

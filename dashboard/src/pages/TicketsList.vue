@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">My Tickets</h2>
-
 		<div v-if="tickets.loading" class="flex justify-center py-8">
 			<div class="text-ink-gray-6">Loading tickets...</div>
 		</div>

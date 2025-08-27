@@ -344,6 +344,9 @@ def get_booking_details(booking_id: str) -> dict:
 	details.can_change_add_ons = can_change_add_ons(details.event.name)
 	details.can_request_cancellation = can_request_cancellation(details.event.name)
 
+	# Payment
+	frappe.db.get_all("Event Payment", filters={})
+
 	# Check for existing cancellation request
 	existing_cancellation = frappe.db.get_value(
 		"Ticket Cancellation Request",
@@ -652,3 +655,22 @@ def create_cancellation_request(booking_id: str, ticket_ids: list | None = None)
 			cancellation_request.append("tickets", {"ticket": ticket_id})
 
 	cancellation_request.insert(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def get_user_info() -> dict:
+	"""Get basic information about the logged-in user."""
+	if frappe.session.user == "Guest":
+		return {"is_logged_in": False}
+
+	user = frappe.get_cached_doc("User", frappe.session.user)
+	return {
+		"name": user.name,
+		"is_logged_in": True,
+		"first_name": user.first_name,
+		"last_name": user.last_name,
+		"full_name": user.full_name,
+		"email": user.email,
+		"user_image": user.user_image,
+		"roles": user.roles,
+	}

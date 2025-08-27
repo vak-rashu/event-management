@@ -1,7 +1,8 @@
 <template>
+	<ProfileView />
 	<Tabs as="div" v-model="tabIndex" :tabs="tabs" @change="handleTabChange">
 		<template #tab-panel>
-			<div class="p-5">
+			<div class="py-5">
 				<router-view></router-view>
 			</div>
 		</template>
@@ -12,13 +13,13 @@
 import { Tabs } from "frappe-ui";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import ProfileView from "@/components/ProfileView.vue";
 
 const route = useRoute();
 const router = useRouter();
 
 const tabs = [
-	{ label: "Profile", name: "profile" },
-	{ label: "Bookings", name: "bookings-list" },
+	{ label: "My Bookings", name: "bookings-list" },
 	{ label: "My Tickets", name: "tickets-list" },
 	{ label: "Sponsorships", name: "sponsorships-list" },
 ];
