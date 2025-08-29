@@ -1,0 +1,76 @@
+<template>
+	<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
+		<div class="flex justify-between items-center mb-4">
+			<h3 class="text-lg font-semibold text-ink-gray-9">Your Tickets</h3>
+
+			<!-- Request Cancellation Button -->
+			<Button
+				v-if="canRequestCancellation && !cancellationRequest"
+				variant="subtle"
+				@click="$emit('request-cancellation')"
+			>
+				Request Cancellation
+			</Button>
+		</div>
+
+		<!-- Restriction notices -->
+		<RestrictionNotices
+			:can-request-cancellation="canRequestCancellation"
+			:can-transfer-tickets="canTransferTickets"
+			:can-change-add-ons="canChangeAddOns"
+			:cancellation-request="cancellationRequest"
+		/>
+
+		<!-- Tickets Grid -->
+		<ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+			<TicketCard
+				v-for="ticket in tickets"
+				:key="ticket.name"
+				:ticket="ticket"
+				:can-transfer="canTransferTickets"
+				:can-change-add-ons="canChangeAddOns"
+				:is-cancelled="isCancelledTicket(ticket.name)"
+				@transfer-success="$emit('transfer-success')"
+			/>
+		</ol>
+	</div>
+</template>
+
+<script setup>
+import { Button } from "frappe-ui";
+import TicketCard from "./TicketCard.vue";
+import RestrictionNotices from "./RestrictionNotices.vue";
+
+const props = defineProps({
+	tickets: {
+		type: Array,
+		required: true,
+	},
+	canRequestCancellation: {
+		type: Boolean,
+		default: false,
+	},
+	canTransferTickets: {
+		type: Boolean,
+		default: false,
+	},
+	canChangeAddOns: {
+		type: Boolean,
+		default: false,
+	},
+	cancellationRequest: {
+		type: Object,
+		default: null,
+	},
+	cancelledTickets: {
+		type: Array,
+		default: () => [],
+	},
+});
+
+defineEmits(["request-cancellation", "transfer-success"]);
+
+const isCancelledTicket = (ticketId) => {
+	return props.cancelledTickets?.includes(ticketId) || false;
+};
+</script>
