@@ -1,5 +1,5 @@
 <template>
-	<li class="shadow-md p-4 rounded-lg bg-surface-cards border border-outline-gray-1 relative">
+	<li class="shadow-md p-4 rounded-lg bg-surface-white border border-outline-gray-2 relative">
 		<!-- Cancellation Status Badge -->
 		<div v-if="isCancelled" class="absolute top-2 left-2">
 			<span

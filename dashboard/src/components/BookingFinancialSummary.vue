@@ -1,5 +1,5 @@
 <template>
-	<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6 mb-6">
+	<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
 		<div class="flex items-center justify-between mb-4">
 			<h3 class="text-lg font-semibold text-ink-gray-9">Payment Summary</h3>
 			<Badge variant="subtle" theme="green" size="sm">

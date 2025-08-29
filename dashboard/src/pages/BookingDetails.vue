@@ -41,20 +41,26 @@
 			Booking Details <span class="text-ink-gray-5 font-mono">(#{{ bookingId }})</span>
 		</h2>
 
-		<!-- Event Information -->
-		<BookingEventInfo v-if="bookingDetails.data.event" :event="bookingDetails.data.event" />
+		<!-- Event Information and Payment Summary in two columns -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+			<!-- Event Information -->
+			<BookingEventInfo
+				v-if="bookingDetails.data.event"
+				:event="bookingDetails.data.event"
+			/>
 
-		<!-- Booking Financial Summary -->
-		<BookingFinancialSummary
-			v-if="bookingDetails.data.doc"
-			:booking="bookingDetails.data.doc"
-		/>
+			<!-- Booking Financial Summary -->
+			<BookingFinancialSummary
+				v-if="bookingDetails.data.doc"
+				:booking="bookingDetails.data.doc"
+			/>
 
-		<!-- Booking Financial Summary -->
-		<BookingFinancialSummary
-			v-if="bookingDetails.data.booking_summary"
-			:summary="bookingDetails.data.booking_summary"
-		/>
+			<!-- Booking Financial Summary -->
+			<BookingFinancialSummary
+				v-if="bookingDetails.data.booking_summary"
+				:summary="bookingDetails.data.booking_summary"
+			/>
+		</div>
 
 		<!-- Cancellation Request Section -->
 		<div v-if="bookingDetails.data.cancellation_request" class="mb-6">
@@ -81,16 +87,15 @@
 		</div>
 
 		<!-- Tickets Section -->
-		<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
+		<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
 			<div class="flex justify-between items-center mb-4">
 				<h3 class="text-lg font-semibold text-ink-gray-9">Your Tickets</h3>
 
 				<!-- Request Cancellation Button -->
 				<Button
 					v-if="canRequestCancellation && !bookingDetails.data.cancellation_request"
-					variant="outline"
+					variant="subtle"
 					@click="showCancellationDialog = true"
-					class="text-ink-red-3 border-outline-red-1 hover:bg-surface-red-1"
 				>
 					Request Cancellation
 				</Button>

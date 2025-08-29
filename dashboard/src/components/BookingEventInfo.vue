@@ -1,36 +1,36 @@
 <template>
-	<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6 mb-6">
-		<div class="flex items-start space-x-4">
-			<!-- Event Details -->
-			<div class="flex-1 min-w-0">
-				<h3 class="text-xl font-semibold text-ink-gray-9 mb-2">{{ event.title }}</h3>
+	<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
+		<h3 class="text-lg font-semibold text-ink-gray-9 mb-4">{{ event.title }}</h3>
 
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<!-- Date & Time -->
-					<div class="flex items-center text-ink-gray-7">
-						<LucideCalendarDays class="w-4 h-4 mr-2 flex-shrink-0" />
-						<div>
-							<p class="font-medium">{{ formatDate(event.start_date) }}</p>
-							<p v-if="event.start_time" class="text-sm text-ink-gray-6">
-								{{ formatTime(event.start_time) }}
-							</p>
-						</div>
-					</div>
-
-					<!-- Venue -->
-					<div v-if="event.venue" class="flex items-center text-ink-gray-7">
-						<LucideMapPin class="w-4 h-4 mr-2 flex-shrink-0" />
-						<div>
-							<p class="font-medium">{{ event.venue }}</p>
-							<p class="text-sm text-ink-gray-6">Venue</p>
-						</div>
-					</div>
+		<div class="space-y-3">
+			<!-- Date & Time -->
+			<div class="flex justify-between items-center text-ink-gray-7">
+				<span class="flex items-center">
+					<LucideCalendarDays class="w-4 h-4 mr-2 flex-shrink-0" />
+					Date & Time
+				</span>
+				<div class="text-right">
+					<p class="font-medium text-ink-gray-9">{{ formatDate(event.start_date) }}</p>
+					<p v-if="event.start_time" class="text-sm text-ink-gray-6">
+						{{ formatTime(event.start_time) }}
+					</p>
 				</div>
+			</div>
 
-				<!-- Event Description -->
-				<div v-if="event.short_description" class="mt-3 text-ink-gray-6 text-sm">
-					<p>{{ event.short_description }}</p>
+			<!-- Venue -->
+			<div v-if="event.venue" class="flex justify-between items-center text-ink-gray-7">
+				<span class="flex items-center">
+					<LucideMapPin class="w-4 h-4 mr-2 flex-shrink-0" />
+					Venue
+				</span>
+				<div class="text-right">
+					<p class="font-medium text-ink-gray-9">{{ event.venue }}</p>
 				</div>
+			</div>
+
+			<!-- Event Description -->
+			<div v-if="event.short_description" class="pt-2 border-t border-outline-gray-1">
+				<p class="text-sm text-ink-gray-6">{{ event.short_description }}</p>
 			</div>
 		</div>
 	</div>

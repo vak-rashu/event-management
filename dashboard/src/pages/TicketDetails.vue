@@ -62,7 +62,7 @@
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Ticket Information -->
-			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
+			<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Ticket Information</h3>
 
 				<div class="space-y-3">
@@ -110,7 +110,7 @@
 			<!-- QR Code Display -->
 			<div
 				v-if="ticketDetails.data.doc.qr_code"
-				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
+				class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6"
 			>
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">QR Code</h3>
 				<div class="flex justify-center">
@@ -128,7 +128,7 @@
 			<!-- Add-ons Information -->
 			<div
 				v-if="ticketDetails.data.add_ons && ticketDetails.data.add_ons.length > 0"
-				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
+				class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6"
 			>
 				<div class="flex justify-between items-center mb-4">
 					<h3 class="text-ink-gray-8 font-semibold text-lg">Add-ons</h3>
@@ -171,7 +171,7 @@
 			</div>
 
 			<!-- Event Information -->
-			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
+			<div class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Event Information</h3>
 
 				<div class="space-y-3">
@@ -206,7 +206,7 @@
 			<!-- Booking Information (only shown if user owns the booking) -->
 			<div
 				v-if="ticketDetails.data.booking"
-				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
+				class="bg-surface-cards border border-outline-gray-1 rounded-lg p-6"
 			>
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Booking Information</h3>
 
