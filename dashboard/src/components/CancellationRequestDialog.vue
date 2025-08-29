@@ -15,9 +15,9 @@
 
 				<!-- Select All Option -->
 				<div
-					class="border border-outline-gray-1 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-2 hover:bg-surface-gray-1"
+					class="border border-outline-gray-2 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-3 hover:bg-surface-gray-1"
 					:class="{
-						'border-outline-gray-3 bg-surface-gray-2': isAllSelected,
+						'border-outline-gray-4 bg-surface-gray-2': isAllSelected,
 					}"
 					@click="toggleSelectAll"
 				>
@@ -42,9 +42,9 @@
 						<div
 							v-for="ticket in tickets"
 							:key="ticket.name"
-							class="border border-outline-gray-1 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-2 hover:bg-surface-gray-1"
+							class="border border-outline-gray-2 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-3 hover:bg-surface-gray-1"
 							:class="{
-								'border-outline-gray-3 bg-surface-gray-2':
+								'border-outline-gray-4 bg-surface-gray-2':
 									selectedTickets.includes(ticket.name),
 							}"
 							@click="toggleTicketSelection(ticket.name)"
