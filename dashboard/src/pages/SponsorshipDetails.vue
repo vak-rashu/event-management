@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-6 flex items-center justify-between">
+	<div class="mb-6 flex items-center justify-between text-ink-gray-6">
 		<RouterLink :to="{ name: 'sponsorships-list' }" class="hover:underline">
 			&larr; Back to Sponsorships
 		</RouterLink>
@@ -7,8 +7,7 @@
 		<!-- Withdraw Button (show only if not paid and not withdrawn) -->
 		<Button
 			v-if="canWithdraw"
-			variant="subtle"
-			theme="red"
+			variant="outline"
 			size="sm"
 			@click="showWithdrawDialog = true"
 			:loading="withdrawResource.loading"
@@ -34,13 +33,13 @@
 		>
 			<div
 				v-if="showSuccessMessage"
-				class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
+				class="mb-6 bg-surface-green-1 border border-outline-green-1 rounded-lg p-4"
 			>
 				<div class="flex items-center">
-					<LucideCheckCircle class="w-6 h-6 text-green-600 mr-3" />
+					<LucideCheckCircle class="w-6 h-6 text-ink-green-2 mr-3" />
 					<div>
-						<h3 class="text-green-800 font-semibold">Payment Successful! 🎉</h3>
-						<p class="text-green-700">
+						<h3 class="text-ink-green-3 font-semibold">Payment Successful! 🎉</h3>
+						<p class="text-ink-green-2">
 							Your sponsorship payment has been confirmed. You'll receive
 							confirmation details via email.
 						</p>
@@ -55,29 +54,32 @@
 		</h2>
 
 		<!-- Sponsorship Confirmation (shown at top if sponsored) -->
-		<div v-if="sponsorDetails" class="mb-6 bg-green-50 border border-green-200 rounded-lg p-6">
+		<div
+			v-if="sponsorDetails"
+			class="mb-6 bg-surface-green-1 border border-outline-green-1 rounded-lg p-6"
+		>
 			<div class="flex items-center mb-4">
-				<LucideCheckCircle class="w-6 h-6 text-green-600 mr-3" />
-				<h3 class="text-green-800 font-semibold text-lg">Sponsorship Confirmed</h3>
+				<LucideCheckCircle class="w-6 h-6 text-ink-green-2 mr-3" />
+				<h3 class="text-ink-green-3 font-semibold text-lg">Sponsorship Confirmed</h3>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
-					<label class="block text-sm font-medium text-green-700 mb-1"
+					<label class="block text-sm font-medium text-ink-green-3 mb-1"
 						>Sponsor Name</label
 					>
-					<p class="text-green-900">{{ sponsorDetails.company_name }}</p>
+					<p class="text-ink-green-3">{{ sponsorDetails.company_name }}</p>
 				</div>
 				<div>
-					<label class="block text-sm font-medium text-green-700 mb-1"
+					<label class="block text-sm font-medium text-ink-green-3 mb-1"
 						>Confirmed On</label
 					>
-					<p class="text-green-900">{{ formatDate(sponsorDetails.creation) }}</p>
+					<p class="text-ink-green-3">{{ formatDate(sponsorDetails.creation) }}</p>
 				</div>
 				<div v-if="sponsorDetails.tier_title" class="md:col-span-2">
-					<label class="block text-sm font-medium text-green-700 mb-1"
+					<label class="block text-sm font-medium text-ink-green-3 mb-1"
 						>Sponsorship Tier</label
 					>
-					<p class="text-green-900">{{ sponsorDetails.tier_title }}</p>
+					<p class="text-ink-green-3">{{ sponsorDetails.tier_title }}</p>
 				</div>
 			</div>
 		</div>
@@ -85,13 +87,13 @@
 		<!-- Withdrawn Alert (shown at top for withdrawn inquiries) -->
 		<div
 			v-if="enquiryDetails.data.enquiry.status === 'Withdrawn'"
-			class="mb-6 bg-red-50 border border-red-200 rounded-lg p-6"
+			class="mb-6 bg-surface-red-1 border border-outline-red-1 rounded-lg p-6"
 		>
 			<div class="flex items-center">
-				<LucideXCircle class="w-6 h-6 text-red-600 mr-3" />
+				<LucideXCircle class="w-6 h-6 text-ink-red-2 mr-3" />
 				<div>
-					<h3 class="text-red-800 font-semibold">Inquiry Withdrawn</h3>
-					<p class="text-red-700 text-sm mt-1">
+					<h3 class="text-ink-red-3 font-semibold">Inquiry Withdrawn</h3>
+					<p class="text-ink-red-2 text-sm mt-1">
 						This sponsorship inquiry has been withdrawn and is no longer active.
 					</p>
 				</div>
@@ -101,13 +103,13 @@
 		<!-- Approval Pending Alert (shown at top for pending approval) -->
 		<div
 			v-if="enquiryDetails.data.enquiry.status === 'Approval Pending'"
-			class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-6"
+			class="mb-6 bg-surface-blue-1 border border-outline-blue-1 rounded-lg p-6"
 		>
 			<div class="flex items-center">
-				<LucideClock class="w-6 h-6 text-blue-600 mr-3" />
+				<LucideClock class="w-6 h-6 text-ink-blue-2 mr-3" />
 				<div>
-					<h3 class="text-blue-800 font-semibold">Awaiting Approval</h3>
-					<p class="text-blue-700 text-sm mt-1">
+					<h3 class="text-ink-blue-3 font-semibold">Awaiting Approval</h3>
+					<p class="text-ink-blue-2 text-sm mt-1">
 						Your sponsorship inquiry has been submitted and is pending approval from
 						the event management team. You'll be notified once it's approved and ready
 						for payment.
@@ -119,30 +121,28 @@
 		<!-- Payment Pending Alert (shown at top for pending payments) -->
 		<div
 			v-else-if="enquiryDetails.data.enquiry.status === 'Payment Pending'"
-			class="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-6"
+			class="mb-6 bg-surface-orange-1 border border-outline-orange-1 rounded-lg p-6"
 		>
 			<div class="flex items-center justify-between">
 				<div class="flex items-center">
-					<LucideClock class="w-6 h-6 text-orange-600 mr-3" />
+					<LucideClock class="w-6 h-6 text-ink-gray-8 mr-3" />
 					<div>
-						<h3 class="text-orange-800 font-semibold">Payment Pending</h3>
-						<p class="text-orange-700 text-sm mt-1">
+						<h3 class="text-ink-gray-8 font-semibold">Payment Pending</h3>
+						<p class="text-ink-gray-7 text-sm mt-1">
 							Your sponsorship inquiry has been approved! Complete your payment to
 							confirm your sponsorship.
 						</p>
 					</div>
 				</div>
 				<div>
-					<Button variant="solid" theme="green" @click="showPaymentDialog = true">
-						Pay Now
-					</Button>
+					<Button variant="solid" @click="showPaymentDialog = true"> Pay Now </Button>
 				</div>
 			</div>
 		</div>
 
 		<div class="space-y-6">
 			<!-- Company Information -->
-			<div class="bg-white border border-gray-200 rounded-lg p-6">
+			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Company Information</h3>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div>
@@ -176,7 +176,7 @@
 										<img
 											:src="currentLogo"
 											:alt="companyName"
-											class="h-16 w-auto object-contain border border-gray-200 rounded p-1"
+											class="h-16 w-auto object-contain border border-outline-gray-1 rounded p-1"
 											:class="{
 												'opacity-50':
 													uploading || updateLogoResource.loading,
@@ -185,9 +185,9 @@
 									</div>
 									<div v-else class="mb-2">
 										<div
-											class="h-16 w-20 border-2 border-dashed border-gray-300 rounded flex items-center justify-center"
+											class="h-16 w-20 border-2 border-dashed border-outline-gray-2 rounded flex items-center justify-center"
 										>
-											<span class="text-gray-400 text-xs">No Logo</span>
+											<span class="text-ink-gray-4 text-xs">No Logo</span>
 										</div>
 									</div>
 
@@ -204,11 +204,13 @@
 									</div>
 
 									<!-- Upload Progress -->
-									<div v-if="uploading" class="text-xs text-gray-600">
+									<div v-if="uploading" class="text-xs text-ink-gray-7">
 										Uploading... {{ progress }}%
-										<div class="w-full bg-gray-200 rounded-full h-1 mt-1">
+										<div
+											class="w-full bg-surface-gray-2 rounded-full h-1 mt-1"
+										>
 											<div
-												class="bg-blue-600 h-1 rounded-full transition-all duration-300"
+												class="bg-ink-blue-2 h-1 rounded-full transition-all duration-300"
 												:style="{ width: progress + '%' }"
 											></div>
 										</div>
@@ -217,7 +219,7 @@
 									<!-- Update Status -->
 									<div
 										v-else-if="updateLogoResource.loading"
-										class="text-xs text-gray-600"
+										class="text-xs text-ink-gray-7"
 									>
 										Updating logo...
 									</div>
@@ -236,7 +238,7 @@
 			</div>
 
 			<!-- Event & Sponsorship Details -->
-			<div class="bg-white border border-gray-200 rounded-lg p-6">
+			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Sponsorship Details</h3>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>
@@ -280,7 +282,7 @@
 			<!-- Event Information (if available) -->
 			<div
 				v-if="enquiryDetails.data.event_details"
-				class="bg-white border border-gray-200 rounded-lg p-6"
+				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
 			>
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Event Information</h3>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -321,7 +323,7 @@
 	</div>
 
 	<div v-else-if="enquiryDetails.error" class="text-center py-8">
-		<div class="text-red-600 text-lg mb-2">Error loading sponsorship details</div>
+		<div class="text-ink-red-3 text-lg mb-2">Error loading sponsorship details</div>
 		<div class="text-ink-gray-4 text-sm">{{ enquiryDetails.error }}</div>
 	</div>
 

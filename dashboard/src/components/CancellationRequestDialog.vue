@@ -15,9 +15,9 @@
 
 				<!-- Select All Option -->
 				<div
-					class="border border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50"
+					class="border border-outline-gray-1 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-2 hover:bg-surface-gray-1"
 					:class="{
-						'border-gray-600 bg-gray-100': isAllSelected,
+						'border-outline-gray-3 bg-surface-gray-2': isAllSelected,
 					}"
 					@click="toggleSelectAll"
 				>
@@ -26,7 +26,7 @@
 							type="checkbox"
 							:checked="isAllSelected"
 							@change="toggleSelectAll"
-							class="h-4 w-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500"
+							class="h-4 w-4 text-ink-gray-6 border-outline-gray-1 rounded focus:ring-ink-gray-5"
 						/>
 						<div>
 							<h3 class="font-semibold text-ink-gray-9">Select All Tickets</h3>
@@ -42,11 +42,10 @@
 						<div
 							v-for="ticket in tickets"
 							:key="ticket.name"
-							class="border border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50"
+							class="border border-outline-gray-1 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-2 hover:bg-surface-gray-1"
 							:class="{
-								'border-gray-600 bg-gray-100': selectedTickets.includes(
-									ticket.name
-								),
+								'border-outline-gray-3 bg-surface-gray-2':
+									selectedTickets.includes(ticket.name),
 							}"
 							@click="toggleTicketSelection(ticket.name)"
 						>
@@ -55,7 +54,7 @@
 									type="checkbox"
 									:checked="selectedTickets.includes(ticket.name)"
 									@change="toggleTicketSelection(ticket.name)"
-									class="h-4 w-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500 mt-1"
+									class="h-4 w-4 text-ink-gray-6 border-outline-gray-1 rounded focus:ring-ink-gray-5 mt-1"
 								/>
 								<div class="flex-1">
 									<div class="flex items-center justify-between">
@@ -75,14 +74,14 @@
 									<!-- Add-ons if any -->
 									<div
 										v-if="ticket.add_ons && ticket.add_ons.length > 0"
-										class="mt-2 pt-2 border-t border-gray-100"
+										class="mt-2 pt-2 border-t border-outline-gray-1"
 									>
 										<p class="text-xs text-ink-gray-5 mb-1">Add-ons:</p>
 										<div class="flex flex-wrap gap-1">
 											<span
 												v-for="addon in ticket.add_ons"
 												:key="addon.name"
-												class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700"
+												class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-surface-gray-1 text-ink-gray-7"
 											>
 												{{ addon.title }}: {{ addon.value }}
 											</span>
@@ -96,7 +95,7 @@
 
 				<!-- Warning if no tickets selected -->
 				<div v-if="selectedTickets.length === 0" class="text-center py-4">
-					<p class="text-red-600 text-sm">
+					<p class="text-ink-red-3 text-sm">
 						Please select at least one ticket to cancel.
 					</p>
 				</div>
@@ -104,12 +103,12 @@
 				<!-- Summary -->
 				<div
 					v-if="selectedTickets.length > 0"
-					class="p-4 bg-blue-50 border border-blue-200 rounded-lg"
+					class="p-4 bg-surface-blue-1 border border-outline-blue-1 rounded-lg"
 				>
 					<div class="flex items-center justify-between">
 						<div>
-							<h4 class="font-semibold text-blue-800">Cancellation Summary</h4>
-							<p class="text-blue-700">
+							<h4 class="font-semibold text-ink-blue-2">Cancellation Summary</h4>
+							<p class="text-ink-blue-2">
 								{{ pluralize(selectedTickets.length, "ticket") }} selected for
 								cancellation
 								<span v-if="isAllSelected" class="font-medium"
@@ -118,8 +117,8 @@
 							</p>
 						</div>
 						<div class="text-right">
-							<p class="text-sm text-blue-600">Request Type</p>
-							<p class="font-medium text-blue-800">
+							<p class="text-sm text-ink-blue-2">Request Type</p>
+							<p class="font-medium text-ink-blue-2">
 								{{ isAllSelected ? "Full Cancellation" : "Partial Cancellation" }}
 							</p>
 						</div>

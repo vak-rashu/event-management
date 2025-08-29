@@ -4,8 +4,11 @@
 			<div class="text-ink-gray-6">Loading tickets...</div>
 		</div>
 
-		<div v-else-if="tickets.error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-			<p class="text-red-800">Error loading tickets: {{ tickets.error.message }}</p>
+		<div
+			v-else-if="tickets.error"
+			class="bg-surface-red-1 border border-outline-red-1 rounded-lg p-4"
+		>
+			<p class="text-ink-red-3">Error loading tickets: {{ tickets.error.message }}</p>
 		</div>
 
 		<ListView

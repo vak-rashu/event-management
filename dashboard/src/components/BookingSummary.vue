@@ -1,15 +1,15 @@
 <!-- BookingSummary.vue -->
 <template>
-	<div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
-		<h2 class="text-xl font-bold text-gray-800 mb-4">Booking Summary</h2>
+	<div class="bg-surface-gray-1 border border-outline-gray-1 rounded-lg p-6">
+		<h2 class="text-xl font-bold text-ink-gray-9 mb-4">Booking Summary</h2>
 
 		<!-- Tickets Section -->
 		<div v-if="Object.keys(summary.tickets).length" class="mb-4">
-			<h3 class="text-lg font-semibold text-gray-700 mb-2">Tickets</h3>
+			<h3 class="text-lg font-semibold text-ink-gray-8 mb-2">Tickets</h3>
 			<div
 				v-for="(ticket, name) in summary.tickets"
 				:key="name"
-				class="flex justify-between items-center text-gray-600 mb-1"
+				class="flex justify-between items-center text-ink-gray-7 mb-1"
 			>
 				<span
 					>{{ ticket.title }} ({{ ticket.count }} x
@@ -21,11 +21,11 @@
 
 		<!-- Add-ons Section -->
 		<div v-if="Object.keys(summary.add_ons).length" class="mb-4">
-			<h3 class="text-lg font-semibold text-gray-700 mb-2">Add-ons</h3>
+			<h3 class="text-lg font-semibold text-ink-gray-8 mb-2">Add-ons</h3>
 			<div
 				v-for="(addOn, name) in summary.add_ons"
 				:key="name"
-				class="flex justify-between items-center text-gray-600 mb-1"
+				class="flex justify-between items-center text-ink-gray-7 mb-1"
 			>
 				<span
 					>{{ addOn.title }} ({{ addOn.count }} x
@@ -35,23 +35,23 @@
 			</div>
 		</div>
 
-		<hr class="my-4 border-t border-gray-200" />
+		<hr class="my-4 border-t border-outline-gray-1" />
 
 		<!-- Subtotal -->
-		<div class="flex justify-between items-center text-gray-700 mb-2">
+		<div class="flex justify-between items-center text-ink-gray-7 mb-2">
 			<span>Subtotal</span>
 			<span class="font-medium">{{ formatPrice(netAmount, totalCurrency) }}</span>
 		</div>
 
 		<!-- GST Section -->
-		<div v-if="shouldApplyGst" class="flex justify-between items-center text-gray-700 mb-2">
+		<div v-if="shouldApplyGst" class="flex justify-between items-center text-ink-gray-7 mb-2">
 			<span>GST ({{ taxPercentage }}%)</span>
 			<span class="font-medium">{{ formatPrice(taxAmount, totalCurrency) }}</span>
 		</div>
 
 		<!-- Final Total Section -->
-		<hr v-if="shouldApplyGst" class="my-2 border-t border-gray-200" />
-		<div class="flex justify-between items-center text-xl font-bold text-gray-900">
+		<hr v-if="shouldApplyGst" class="my-2 border-t border-outline-gray-1" />
+		<div class="flex justify-between items-center text-xl font-bold text-ink-gray-9">
 			<h3>Total</h3>
 			<span>{{ formatPrice(total, totalCurrency) }}</span>
 		</div>

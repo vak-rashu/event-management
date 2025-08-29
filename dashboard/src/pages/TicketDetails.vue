@@ -1,6 +1,6 @@
 <template>
 	<div class="mb-6">
-		<RouterLink :to="{ name: 'tickets-list' }" class="hover:underline">
+		<RouterLink :to="{ name: 'tickets-list' }" class="hover:underline text-ink-gray-6">
 			&larr; Back to My Tickets
 		</RouterLink>
 	</div>
@@ -47,12 +47,12 @@
 
 		<div
 			v-if="hasCustomizableAddOns && !canChangeAddOns"
-			class="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4"
+			class="mb-4 bg-surface-amber-1 border border-outline-amber-1 rounded-lg p-4"
 		>
 			<div class="flex items-center">
-				<LucideTriangleAlert class="w-5 h-5 text-yellow-600 mr-3" />
+				<LucideTriangleAlert class="w-5 h-5 text-ink-amber-2 mr-3" />
 				<div>
-					<p class="text-yellow-800 text-sm">
+					<p class="text-ink-amber-3 text-sm">
 						<strong>Add-on preference changes are no longer available</strong> - The
 						change window has closed as the event is approaching.
 					</p>
@@ -62,7 +62,7 @@
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Ticket Information -->
-			<div class="bg-white border border-gray-200 rounded-lg p-6">
+			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Ticket Information</h3>
 
 				<div class="space-y-3">
@@ -110,14 +110,14 @@
 			<!-- QR Code Display -->
 			<div
 				v-if="ticketDetails.data.doc.qr_code"
-				class="bg-white border border-gray-200 rounded-lg p-6"
+				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
 			>
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">QR Code</h3>
 				<div class="flex justify-center">
 					<img
 						:src="ticketDetails.data.doc.qr_code"
 						alt="Ticket QR Code"
-						class="max-w-48 h-auto border border-gray-200 rounded"
+						class="max-w-48 h-auto border border-outline-gray-1 rounded"
 					/>
 				</div>
 				<p class="text-sm text-ink-gray-6 text-center mt-2">
@@ -128,7 +128,7 @@
 			<!-- Add-ons Information -->
 			<div
 				v-if="ticketDetails.data.add_ons && ticketDetails.data.add_ons.length > 0"
-				class="bg-white border border-gray-200 rounded-lg p-6"
+				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
 			>
 				<div class="flex justify-between items-center mb-4">
 					<h3 class="text-ink-gray-8 font-semibold text-lg">Add-ons</h3>
@@ -149,7 +149,7 @@
 					<div
 						v-for="addon in ticketDetails.data.add_ons"
 						:key="addon.name"
-						class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+						class="flex justify-between items-center p-3 bg-surface-gray-1 rounded-lg"
 					>
 						<div>
 							<p class="font-medium text-ink-gray-9">
@@ -171,7 +171,7 @@
 			</div>
 
 			<!-- Event Information -->
-			<div class="bg-white border border-gray-200 rounded-lg p-6">
+			<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6">
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Event Information</h3>
 
 				<div class="space-y-3">
@@ -206,7 +206,7 @@
 			<!-- Booking Information (only shown if user owns the booking) -->
 			<div
 				v-if="ticketDetails.data.booking"
-				class="bg-white border border-gray-200 rounded-lg p-6"
+				class="bg-surface-white border border-outline-gray-1 rounded-lg p-6"
 			>
 				<h3 class="text-ink-gray-8 font-semibold text-lg mb-4">Booking Information</h3>
 
@@ -218,7 +218,7 @@
 								name: 'booking-details',
 								params: { bookingId: ticketDetails.data.doc.booking },
 							}"
-							class="text-blue-600 hover:underline"
+							class="text-ink-blue-link hover:underline"
 						>
 							#{{ ticketDetails.data.doc.booking }}
 						</RouterLink>

@@ -26,9 +26,10 @@
 					<div
 						v-for="tier in tiers.data"
 						:key="tier.name"
-						class="border border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50"
+						class="border border-outline-gray-2 rounded-lg p-4 cursor-pointer transition-all hover:border-outline-gray-3 hover:bg-surface-gray-1"
 						:class="{
-							'border-gray-600 bg-gray-100': selectedTier?.name === tier.name,
+							'border-outline-gray-4 bg-surface-gray-2':
+								selectedTier?.name === tier.name,
 						}"
 						@click="selectedTier = tier"
 					>
@@ -38,7 +39,7 @@
 									type="radio"
 									:checked="selectedTier?.name === tier.name"
 									@change="selectedTier = tier"
-									class="text-gray-600"
+									class="text-ink-gray-6"
 								/>
 								<div>
 									<h3 class="font-semibold text-ink-gray-9">{{ tier.title }}</h3>
@@ -55,16 +56,16 @@
 
 				<div
 					v-if="selectedTier"
-					class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg"
+					class="mt-6 p-4 bg-surface-green-1 border border-outline-green-1 rounded-lg"
 				>
 					<div class="flex items-center justify-between">
 						<div>
-							<h4 class="font-semibold text-green-800">Selected Tier</h4>
-							<p class="text-green-700">{{ selectedTier.title }}</p>
+							<h4 class="font-semibold text-ink-green-2">Selected Tier</h4>
+							<p class="text-ink-green-2">{{ selectedTier.title }}</p>
 						</div>
 						<div class="text-right">
-							<p class="text-sm text-green-600">Total Amount</p>
-							<p class="font-bold text-xl text-green-800">
+							<p class="text-sm text-ink-green-2">Total Amount</p>
+							<p class="font-bold text-xl text-ink-green-2">
 								{{ formatCurrency(selectedTier.price, selectedTier.currency) }}
 							</p>
 						</div>
@@ -73,7 +74,7 @@
 			</div>
 
 			<div v-else-if="tiers.error" class="text-center py-8">
-				<p class="text-red-600">Error loading sponsorship tiers</p>
+				<p class="text-ink-red-2">Error loading sponsorship tiers</p>
 				<p class="text-ink-gray-5 text-sm">{{ tiers.error }}</p>
 			</div>
 

@@ -16,6 +16,7 @@ declare module 'vue' {
     BookingSummary: typeof import('./src/components/BookingSummary.vue')['default']
     CancellationRequestDialog: typeof import('./src/components/CancellationRequestDialog.vue')['default']
     EventSponsorForm: typeof import('./src/components/EventSponsorForm.vue')['default']
+    LucideCheck: typeof import('~icons/lucide/check')['default']
     LucideCheckCircle: typeof import('~icons/lucide/check-circle')['default']
     LucideChevronRight: typeof import('~icons/lucide/chevron-right')['default']
     LucideGift: typeof import('~icons/lucide/gift')['default']

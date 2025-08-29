@@ -1,5 +1,5 @@
 <template>
-	<div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+	<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6 mb-6">
 		<div class="flex items-start space-x-4">
 			<!-- Event Details -->
 			<div class="flex-1 min-w-0">

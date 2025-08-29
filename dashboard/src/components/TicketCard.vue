@@ -1,9 +1,9 @@
 <template>
-	<li class="shadow-md p-4 rounded-lg bg-white relative">
+	<li class="shadow-md p-4 rounded-lg bg-surface-cards border border-outline-gray-1 relative">
 		<!-- Cancellation Status Badge -->
 		<div v-if="isCancelled" class="absolute top-2 left-2">
 			<span
-				class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+				class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-surface-red-1 text-ink-red-3"
 			>
 				Cancellation Requested
 			</span>
@@ -17,23 +17,23 @@
 		</div>
 
 		<div>
-			<h4 class="text-md font-semibold text-gray-800" :class="{ 'mt-6': isCancelled }">
+			<h4 class="text-md font-semibold text-ink-gray-9" :class="{ 'mt-6': isCancelled }">
 				{{ ticket.attendee_name }}
 			</h4>
-			<p class="text-sm text-gray-600">Email: {{ ticket.attendee_email }}</p>
-			<p class="text-sm text-gray-600">Ticket Type: {{ ticket.ticket_type }}</p>
+			<p class="text-sm text-ink-gray-7">Email: {{ ticket.attendee_email }}</p>
+			<p class="text-sm text-ink-gray-7">Ticket Type: {{ ticket.ticket_type }}</p>
 
 			<!-- Add-ons Section -->
 			<div v-if="ticket.add_ons && ticket.add_ons.length > 0" class="mt-3">
-				<h5 class="text-sm font-medium text-gray-700 mb-2">Add-ons:</h5>
+				<h5 class="text-sm font-medium text-ink-gray-8 mb-2">Add-ons:</h5>
 				<div class="space-y-1">
 					<div
 						v-for="addon in ticket.add_ons"
 						:key="addon.name"
-						class="flex justify-between items-center bg-gray-50 px-2 py-1 rounded text-xs"
+						class="flex justify-between items-center bg-surface-gray-1 px-2 py-1 rounded text-xs"
 					>
-						<span class="font-medium text-gray-700">{{ addon.title }}:</span>
-						<span class="text-gray-600">{{ addon.value }}</span>
+						<span class="font-medium text-ink-gray-8">{{ addon.title }}:</span>
+						<span class="text-ink-gray-7">{{ addon.value }}</span>
 					</div>
 				</div>
 			</div>

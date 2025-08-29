@@ -1,6 +1,8 @@
 <!-- AttendeeCard.vue -->
 <template>
-	<div class="bg-white border border-gray-300 rounded-xl p-4 md:p-6 mb-6 shadow-sm relative">
+	<div
+		class="bg-surface-white border border-outline-gray-3 rounded-xl p-4 md:p-6 mb-6 shadow-sm relative"
+	>
 		<!-- Remove Button -->
 		<Tooltip text="Remove Attendee" :hover-delay="0.5">
 			<Button
@@ -14,7 +16,7 @@
 			/>
 		</Tooltip>
 
-		<h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2 pr-10">
+		<h4 class="text-lg font-semibold text-ink-gray-9 mb-4 border-b pb-2 pr-10">
 			Attendee #{{ index + 1 }}
 		</h4>
 
@@ -53,7 +55,7 @@
 
 		<!-- Add-ons -->
 		<div v-if="availableAddOns.length > 0">
-			<h5 class="text-md font-semibold text-gray-700 mt-6 mb-3">Add-ons</h5>
+			<h5 class="text-md font-semibold text-ink-gray-8 mt-6 mb-3">Add-ons</h5>
 			<div v-for="addOn in availableAddOns" :key="addOn.name" class="mb-3">
 				<div class="flex items-center">
 					<FormControl

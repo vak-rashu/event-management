@@ -1,10 +1,10 @@
 <template>
-	<div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+	<div class="bg-surface-white border border-outline-gray-1 rounded-lg p-6 mb-6">
 		<div class="flex items-center justify-between mb-4">
 			<h3 class="text-lg font-semibold text-ink-gray-9">Payment Summary</h3>
-			<Badge variant="solid" theme="green" size="sm">
+			<Badge variant="subtle" theme="green" size="sm">
 				<template #prefix>
-					<LucideCheckCircle class="w-3 h-3" />
+					<LucideCheck class="w-3 h-3" />
 				</template>
 				Paid
 			</Badge>
@@ -28,22 +28,25 @@
 			</div>
 
 			<!-- Divider -->
-			<hr class="border-gray-200" />
+			<hr class="border-outline-gray-1" />
 
 			<!-- Total Amount -->
 			<div class="flex justify-between items-center text-lg font-semibold text-ink-gray-9">
 				<span>Total Paid</span>
-				<span class="text-green-600">{{
+				<span class="text-ink-green-2">{{
 					formatPrice(booking.total_amount || 0, booking.currency || "INR")
 				}}</span>
 			</div>
 		</div>
 
 		<!-- Zero amount case -->
-		<div v-if="(booking.total_amount || 0) === 0" class="mt-4 p-3 bg-green-50 rounded-lg">
+		<div
+			v-if="(booking.total_amount || 0) === 0"
+			class="mt-4 p-3 bg-surface-green-1 rounded-lg"
+		>
 			<div class="flex items-start">
-				<LucideGift class="w-4 h-4 text-green-600 mt-0.5 mr-2 flex-shrink-0" />
-				<div class="text-sm text-green-800">
+				<LucideGift class="w-4 h-4 text-ink-green-2 mt-0.5 mr-2 flex-shrink-0" />
+				<div class="text-sm text-ink-green-3">
 					<p class="font-medium">Free Event</p>
 					<p>This was a free event with no payment required.</p>
 				</div>
@@ -56,7 +59,7 @@
 import { computed } from "vue";
 import { Badge } from "frappe-ui";
 import { formatPrice } from "../utils/currency.js";
-import LucideCheckCircle from "~icons/lucide/check-circle";
+import LucideCheck from "~icons/lucide/check";
 import LucideGift from "~icons/lucide/gift";
 
 const props = defineProps({

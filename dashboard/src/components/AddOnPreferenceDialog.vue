@@ -2,20 +2,20 @@
 	<Dialog v-model="show" :options="dialogOptions">
 		<template #body-content>
 			<div class="space-y-4">
-				<p class="text-gray-700">
+				<p class="text-ink-gray-8">
 					Update your add-on preferences for <strong>{{ ticket.attendee_name }}</strong>
 				</p>
 
 				<div v-if="addOnsWithOptions.length === 0" class="text-center py-4">
-					<p class="text-gray-500">No customizable add-ons found for this ticket.</p>
+					<p class="text-ink-gray-6">No customizable add-ons found for this ticket.</p>
 				</div>
 
 				<div v-else class="space-y-4">
 					<div v-for="addon in addOnsWithOptions" :key="addon.id" class="space-y-2">
-						<label class="block text-sm font-medium text-gray-700">
+						<label class="block text-sm font-medium text-ink-gray-8">
 							{{ addon.title }}
 						</label>
-						<p class="text-xs text-gray-500 mb-2">Current: {{ addon.value }}</p>
+						<p class="text-xs text-ink-gray-6 mb-2">Current: {{ addon.value }}</p>
 						<FormControl
 							type="select"
 							:options="addon.selectOptions"

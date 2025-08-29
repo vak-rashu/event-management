@@ -21,7 +21,7 @@
 						variant="outline"
 						size="lg"
 						@click="addAttendee"
-						class="w-full max-w-md border-dashed border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 py-4"
+						class="w-full max-w-md border-dashed border-2 border-outline-gray-2 hover:border-outline-gray-3 text-ink-gray-7 hover:text-ink-gray-8 py-4"
 					>
 						+ Add Another Attendee
 					</Button>
