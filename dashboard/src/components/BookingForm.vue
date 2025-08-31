@@ -1,66 +1,71 @@
 <!-- BookingForm.vue -->
 <template>
-	<form @submit.prevent="submit">
-		<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-			<!-- Left Side: Form Inputs -->
-			<div class="lg:col-span-2">
-				<AttendeeFormControl
-					v-for="(attendee, index) in attendees"
-					:key="attendee.id"
-					:attendee="attendee"
-					:index="index"
-					:available-ticket-types="availableTicketTypes"
-					:available-add-ons="availableAddOns"
-					:show-remove="attendees.length > 1"
-					@remove="removeAttendee(index)"
-				/>
+	<div>
+		<EventDetailsHeader :event-details="eventDetails" />
 
-				<!-- Add Attendee Button -->
-				<div class="text-center mt-6">
-					<Button
-						variant="outline"
-						size="lg"
-						@click="addAttendee"
-						class="w-full max-w-md border-dashed border-2 border-outline-gray-2 hover:border-outline-gray-3 text-ink-gray-7 hover:text-ink-gray-8 py-4"
-					>
-						+ Add Another Attendee
-					</Button>
-				</div>
-			</div>
-
-			<!-- Right Side: Summary and Submit -->
-			<div class="lg:col-span-1">
-				<div class="sticky top-4 w-full">
-					<BookingSummary
-						:summary="summary"
-						:net-amount="netAmount"
-						:tax-amount="taxAmount"
-						:tax-percentage="taxPercentage"
-						:should-apply-gst="shouldApplyGST"
-						:total="finalTotal"
-						:total-currency="totalCurrency"
+		<form @submit.prevent="submit">
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				<!-- Left Side: Form Inputs -->
+				<div class="lg:col-span-2">
+					<AttendeeFormControl
+						v-for="(attendee, index) in attendees"
+						:key="attendee.id"
+						:attendee="attendee"
+						:index="index"
+						:available-ticket-types="availableTicketTypes"
+						:available-add-ons="availableAddOns"
+						:show-remove="attendees.length > 1"
+						@remove="removeAttendee(index)"
 					/>
-					<div class="w-full">
+
+					<!-- Add Attendee Button -->
+					<div class="text-center mt-6">
 						<Button
-							variant="solid"
+							variant="outline"
 							size="lg"
-							class="w-full mt-3"
-							type="submit"
-							:loading="processBooking.loading"
+							@click="addAttendee"
+							class="w-full max-w-md border-dashed border-2 border-outline-gray-2 hover:border-outline-gray-3 text-ink-gray-7 hover:text-ink-gray-8 py-4"
 						>
-							{{ processBooking.loading ? "Processing..." : "Pay & Book" }}
+							+ Add Another Attendee
 						</Button>
 					</div>
 				</div>
+
+				<!-- Right Side: Summary and Submit -->
+				<div class="lg:col-span-1">
+					<div class="sticky top-4 w-full">
+						<BookingSummary
+							:summary="summary"
+							:net-amount="netAmount"
+							:tax-amount="taxAmount"
+							:tax-percentage="taxPercentage"
+							:should-apply-gst="shouldApplyGST"
+							:total="finalTotal"
+							:total-currency="totalCurrency"
+						/>
+						<div class="w-full">
+							<Button
+								variant="solid"
+								size="lg"
+								class="w-full mt-3"
+								type="submit"
+								:loading="processBooking.loading"
+							>
+								{{ processBooking.loading ? "Processing..." : "Pay & Book" }}
+							</Button>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
+	</div>
 </template>
 
 <script setup>
 import { computed, watch } from "vue";
 import AttendeeFormControl from "./AttendeeFormControl.vue";
 import BookingSummary from "./BookingSummary.vue";
+import EventDetailsHeader from "./EventDetailsHeader.vue";
 import { createResource } from "frappe-ui";
 import { useBookingFormStorage } from "../composables/useBookingFormStorage.js";
 
@@ -80,6 +85,10 @@ const props = defineProps({
 			apply_gst_on_bookings: false,
 			gst_percentage: 18,
 		}),
+	},
+	eventDetails: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 

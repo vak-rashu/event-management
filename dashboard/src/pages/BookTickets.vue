@@ -8,6 +8,7 @@
 			:availableAddOns="eventBookingData.availableAddOns"
 			:availableTicketTypes="eventBookingData.availableTicketTypes"
 			:gstSettings="eventBookingData.gstSettings"
+			:eventDetails="eventBookingData.eventDetails"
 		/>
 	</div>
 </template>
@@ -21,6 +22,7 @@ const eventBookingData = reactive({
 	availableAddOns: null,
 	availableTicketTypes: null,
 	gstSettings: null,
+	eventDetails: null,
 });
 
 const props = defineProps({
@@ -43,6 +45,7 @@ const eventBookingResource = createResource({
 			apply_gst_on_bookings: false,
 			gst_percentage: 18,
 		};
+		eventBookingData.eventDetails = data.event_details || {};
 	},
 	onError: (error) => {
 		if (error.message.includes("DoesNotExistError")) {

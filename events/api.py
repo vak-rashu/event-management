@@ -144,6 +144,8 @@ def get_event_booking_data(event_route: str) -> dict:
 		"gst_percentage": event_settings.gst_percentage or 18,
 	}
 
+	data.event_details = event_doc
+
 	return data
 
 
