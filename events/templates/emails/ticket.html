@@ -179,7 +179,7 @@
                                     </p>
                                     <p
                                       style='color:rgb(31,41,55);font-size:16px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-weight:500;margin:0px;line-height:24px;margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px'>
-                                      TC2025-VIP-001234
+                                      {{ doc.name }}
                                     </p>
                                   </td>
                                   <td
@@ -190,26 +190,13 @@
                                       ✨ ADD-ONS
                                     </p>
                                     <div>
+										{% for add_on in doc.add_ons %}
                                       <p
                                         style="color:rgb(31,41,55);font-size:14px;margin:0px;margin-bottom:2px;line-height:24px;margin-top:0px;margin-left:0px;margin-right:0px">
                                         •
-                                        <!-- -->Meal Package
+                                         {{ frappe.db.get_value("Ticket Add-on", add_on.add_on, "title") }} ({{ add_on.value }})
                                       </p>
-                                      <p
-                                        style="color:rgb(31,41,55);font-size:14px;margin:0px;margin-bottom:2px;line-height:24px;margin-top:0px;margin-left:0px;margin-right:0px">
-                                        •
-                                        <!-- -->Vegetarian Option
-                                      </p>
-                                      <p
-                                        style="color:rgb(31,41,55);font-size:14px;margin:0px;margin-bottom:2px;line-height:24px;margin-top:0px;margin-left:0px;margin-right:0px">
-                                        •
-                                        <!-- -->Event T-shirt (L)
-                                      </p>
-                                      <p
-                                        style="color:rgb(31,41,55);font-size:14px;margin:0px;margin-bottom:2px;line-height:24px;margin-top:0px;margin-left:0px;margin-right:0px">
-                                        •
-                                        <!-- -->Excel Workshop
-                                      </p>
+									  {% endfor %}
                                     </div>
                                   </td>
                                 </tr>
@@ -243,7 +230,7 @@
                       <img
                         alt="Event Entry QR Code"
                         height="200"
-                        src="https://new.email/static/app/placeholder.png"
+                        src="{{ doc.qr_code }}"
                         style="width:100%;height:auto;object-fit:cover;display:block;outline:none;border:none;text-decoration:none"
                         width="200" />
                     </div>
@@ -255,7 +242,7 @@
                 </tr>
               </tbody>
             </table>
-            <table
+            <!-- <table
               align="center"
               width="100%"
               border="0"
@@ -289,7 +276,7 @@
                   </td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
             <table
               align="center"
               width="100%"
@@ -328,7 +315,7 @@
                   <td>
                     <p
                       style="color:rgb(209,213,219);font-size:14px;margin-bottom:8px;margin-top:0px;line-height:24px">
-                      Tech Events Inc.
+                      Powered by BWH Buzz.
                     </p>
                     <p
                       style="color:rgb(156,163,175);font-size:12px;margin:0px;line-height:24px;margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0px">
@@ -339,12 +326,6 @@
                       © 2025
                       <!-- -->Tech Events Inc.<!-- -->. All rights reserved.
                     </p>
-                    <a
-                      href="#"
-                      style="color:rgb(156,163,175);font-size:12px;text-decoration-line:underline;margin-top:8px;display:block"
-                      target="_blank"
-                      >Unsubscribe</a
-                    >
                   </td>
                 </tr>
               </tbody>

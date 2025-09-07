@@ -33,6 +33,44 @@ class EventTicket(Document):
 		self.validate_coupon_usage()
 		self.generate_qr_code()
 
+	def on_submit(self):
+		try:
+			self.send_ticket_email()
+		except Exception as e:
+			frappe.log_error("Error sending ticket email: " + str(e))
+
+	def send_ticket_email(self):
+		event_title, ticket_template, ticket_print_format, venue = frappe.get_cached_value(
+			"FE Event", self.event, ["title", "ticket_email_template", "ticket_print_format", "venue"]
+		)
+		subject = frappe._("Your ticket to {0} 🎟️").format(event_title)
+		args = {"doc": self, "event_title": event_title, "venue": venue}
+
+		if ticket_template:
+			from frappe.email.doctype.email_template.email_template import get_email_template
+
+			email_template = get_email_template(ticket_template, args)
+			subject = email_template.get("subject")
+			content = email_template.get("message")
+
+		frappe.sendmail(
+			recipients=[self.attendee_email],
+			subject=subject,
+			content=content if ticket_template else None,
+			template="ticket" if not ticket_template else None,
+			args=args,
+			reference_doctype=self.doctype,
+			reference_name=self.name,
+			attachments=[
+				{
+					"print_format_attachment": 1,
+					"doctype": self.doctype,
+					"name": self.name,
+					"print_format": ticket_print_format or "Standard Ticket",
+				}
+			],
+		)
+
 	def validate_coupon_usage(self):
 		if not self.coupon_used:
 			return
