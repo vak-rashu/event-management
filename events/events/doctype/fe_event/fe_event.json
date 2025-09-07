@@ -199,6 +199,7 @@
    "fieldname": "ticket_print_format",
    "fieldtype": "Link",
    "label": "Ticket Print Format",
+   "link_filters": "[[\"Print Format\",\"doc_type\",\"=\",\"Event Ticket\"]]",
    "options": "Print Format"
   },
   {
@@ -277,7 +278,7 @@
    "link_fieldname": "event"
   }
  ],
- "modified": "2025-08-20 14:10:18.227171",
+ "modified": "2025-09-07 17:28:25.683258",
  "modified_by": "Administrator",
  "module": "Events",
  "name": "FE Event",
