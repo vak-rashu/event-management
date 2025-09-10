@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h2 class="text-ink-gray-9 font-semibold text-lg mb-3">Your Sponsorship Inquiries</h2>
 		<ListView
 			v-if="sponsorships.data"
 			:columns="columns"
