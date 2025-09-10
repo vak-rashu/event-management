@@ -13,6 +13,9 @@
 					<p class="font-medium text-ink-gray-9">{{ formatDate(event.start_date) }}</p>
 					<p v-if="event.start_time" class="text-sm text-ink-gray-6">
 						{{ formatTime(event.start_time) }}
+						<span v-if="event.time_zone" class="text-ink-gray-5">
+							({{ formatTimezone(event.time_zone) }})
+						</span>
 					</p>
 				</div>
 			</div>
@@ -37,9 +40,9 @@
 </template>
 
 <script setup>
-import LucideCalendar from "~icons/lucide/calendar";
 import LucideCalendarDays from "~icons/lucide/calendar-days";
 import LucideMapPin from "~icons/lucide/map-pin";
+import { dayjsLocal } from "frappe-ui";
 
 defineProps({
 	event: {
@@ -56,21 +59,32 @@ defineProps({
 });
 
 const formatDate = (dateString) => {
-	return new Date(dateString).toLocaleDateString("en-US", {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
+	if (!dateString) return "";
+	return dayjsLocal(dateString).format("dddd, MMMM D, YYYY");
 };
 
 const formatTime = (timeString) => {
 	if (!timeString) return "";
-	const time = new Date(`2000-01-01T${timeString}`);
-	return time.toLocaleTimeString("en-US", {
-		hour: "numeric",
-		minute: "2-digit",
-		hour12: true,
-	});
+	// Use a fixed date with the time string for parsing
+	const dt = dayjsLocal(`2000-01-01T${timeString}`);
+	return dt.format("h:mm A");
+};
+
+const formatTimezone = (timezone) => {
+	if (!timezone) return "";
+	try {
+		const now = new Date();
+		const abbreviation = new Intl.DateTimeFormat("en", {
+			timeZone: timezone,
+			timeZoneName: "short",
+		})
+			.formatToParts(now)
+			.find((part) => part.type === "timeZoneName")?.value;
+
+		return abbreviation || timezone.split("/")[1]?.replace("_", " ");
+	} catch (error) {
+		// Fallback to just the city name if timezone parsing fails
+		return timezone.split("/")[1]?.replace("_", " ") || timezone;
+	}
 };
 </script>
