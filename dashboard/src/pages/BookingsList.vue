@@ -11,6 +11,10 @@
 					name: 'booking-details',
 					params: { bookingId: row.name },
 				}),
+				emptyState: {
+					title: 'No bookings found',
+					description: 'You haven\'t made any bookings yet.',
+				},
 			}"
 		>
 			<template #cell="{ item, row, column }">
