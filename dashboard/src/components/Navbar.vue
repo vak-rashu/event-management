@@ -1,13 +1,18 @@
 <template>
-	<nav class="flex items-center justify-end gap-4 p-4 border-b">
-		<Button variant="ghost" size="md" @click="toggleTheme">
-			<LucideSun v-if="userTheme === 'dark'" class="w-4 h-4" />
-			<LucideMoon v-else class="w-4 h-4" />
-		</Button>
-	</nav>
+	<div class="border-b">
+		<nav class="flex items-center justify-between gap-4 p-4 max-w-7xl mx-auto">
+			<div>
+				<span class="font-bold text-ink-gray-7">Buzz</span>
+			</div>
+			<Button variant="ghost" size="md" @click="toggleTheme">
+				<LucideSun v-if="userTheme === 'dark'" class="w-4 h-4" />
+				<LucideMoon v-else class="w-4 h-4" />
+			</Button>
+		</nav>
+	</div>
 </template>
 
-<script>
+<script setup>
 import LucideSun from "~icons/lucide/sun";
 import LucideMoon from "~icons/lucide/moon";
 

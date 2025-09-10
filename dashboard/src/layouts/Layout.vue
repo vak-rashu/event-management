@@ -1,7 +1,11 @@
 <template>
-	<Navbar />
-	<div class="max-w-7xl py-12 mx-auto">
-		<slot></slot>
+	<div>
+		<div>
+			<Navbar />
+		</div>
+		<div class="max-w-7xl py-12 mx-auto">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
