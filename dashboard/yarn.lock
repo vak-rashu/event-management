@@ -541,6 +541,11 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
+"@tailwindcss/line-clamp@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.4.tgz#767cf8e5d528a5d90c9740ca66eb079f5e87d423"
+  integrity sha512-5U6SY5z8N42VtrCrKlsTAA35gy2VSyYtHWCsg1H87NU1SXnEfekTVlrga9fzUDrrHcGi2Lb5KenUWb4lRQT5/g==
+
 "@tailwindcss/typography@^0.5.16":
   version "0.5.16"
   resolved "https://registry.npmjs.org/@tailwindcss/typography/-/typography-0.5.16.tgz"
@@ -1570,15 +1575,16 @@ fraction.js@^4.1.2:
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.1.2.tgz"
   integrity sha512-o2RiJQ6DZaR/5+Si0qJUIy637QMRudSi9kU/FFzx9EZazrIdnBgpU+3sEWCxAVhH2RtxW2Oz+T4p2o8uOPVcgA==
 
-frappe-ui@^0.1.188:
-  version "0.1.188"
-  resolved "https://registry.yarnpkg.com/frappe-ui/-/frappe-ui-0.1.188.tgz#69f4fd506361c31bed8b38c95c9ed50ea5ef114f"
-  integrity sha512-5H0J6y96DSs3ddr47/QU9ptgVjcliu0rjLg6I/3IDEk0+4iUurmGa6l86eWxtjyClQ39Kxxaax6hr9Lj+eyfQA==
+frappe-ui@^0.1.199:
+  version "0.1.199"
+  resolved "https://registry.yarnpkg.com/frappe-ui/-/frappe-ui-0.1.199.tgz#76faa7c537efb06e52c6fe8c45c2dd4de2520a3c"
+  integrity sha512-ANTxIUK6sZd1FTrmpqaYuinDiGr0k2vNsp/KjUjm7ocR9iPbP9ssaVc2nNb6kq1BWCzhPROuZXZ5lRsX04GlCA==
   dependencies:
     "@floating-ui/vue" "^1.1.6"
     "@headlessui/vue" "^1.7.14"
     "@popperjs/core" "^2.11.2"
     "@tailwindcss/forms" "^0.5.3"
+    "@tailwindcss/line-clamp" "^0.4.4"
     "@tailwindcss/typography" "^0.5.16"
     "@tiptap/core" "^2.26.1"
     "@tiptap/extension-code-block" "^2.26.1"
@@ -1617,7 +1623,7 @@ frappe-ui@^0.1.188:
     ora "5.4.1"
     prettier "^3.3.2"
     radix-vue "^1.5.3"
-    reka-ui "^2.0.2"
+    reka-ui "^2.5.0"
     socket.io-client "^4.5.1"
     tippy.js "^6.3.7"
     typescript "^5.0.2"
@@ -2498,10 +2504,10 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-reka-ui@^2.0.2:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/reka-ui/-/reka-ui-2.3.1.tgz"
-  integrity sha512-2SjGeybd7jvD8EQUkzjgg7GdOQdf4cTwdVMq/lDNTMqneUFNnryGO43dg8WaM/jaG9QpSCZBvstfBFWlDdb2Zg==
+reka-ui@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/reka-ui/-/reka-ui-2.5.0.tgz#3797f3cc5296ebb3352a8fa79f0eb506a9d27570"
+  integrity sha512-81aMAmJeVCy2k0E6x7n1kypDY6aM1ldLis5+zcdV1/JtoAlSDck5OBsyLRJU9CfgbrQp1ImnRnBSmC4fZ2fkZQ==
   dependencies:
     "@floating-ui/dom" "^1.6.13"
     "@floating-ui/vue" "^1.1.6"
