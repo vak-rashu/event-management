@@ -94,7 +94,7 @@ const props = defineProps({
 
 // --- STATE ---
 // Use the booking form storage composable
-const { attendees, attendeeIdCounter, clearStoredData } = useBookingFormStorage();
+const { attendees, attendeeIdCounter } = useBookingFormStorage();
 
 // --- HELPERS / DERIVED STATE ---
 const addOnsMap = computed(() =>
