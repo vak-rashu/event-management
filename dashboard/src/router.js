@@ -6,7 +6,7 @@ const routes = [
 	{
 		path: "/",
 		name: "dashboard",
-		component: () => import("@/pages/Dashboard.vue"),
+		redirect: { name: "bookings-tab" },
 	},
 	{
 		path: "/book-tickets/:eventRoute",
@@ -16,6 +16,7 @@ const routes = [
 	},
 	{
 		path: "/bookings",
+		name: "bookings-tab",
 		redirect: "/account/bookings",
 	},
 	{

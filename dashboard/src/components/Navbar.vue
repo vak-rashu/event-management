@@ -1,9 +1,9 @@
 <template>
 	<div class="border-b">
 		<nav class="flex items-center justify-between gap-4 p-4 max-w-7xl mx-auto">
-			<div>
+			<RouterLink :to="{ name: 'bookings-tab' }">
 				<span class="font-bold text-ink-gray-7">Buzz</span>
-			</div>
+			</RouterLink>
 			<Button variant="ghost" size="md" @click="toggleTheme">
 				<LucideSun v-if="userTheme === 'dark'" class="w-4 h-4" />
 				<LucideMoon v-else class="w-4 h-4" />
