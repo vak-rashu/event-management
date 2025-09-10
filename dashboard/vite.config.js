@@ -37,17 +37,13 @@ export default defineConfig(async ({ command, mode }) => {
 					indexHtmlPath: "../events/www/dashboard.html",
 					emptyOutDir: true,
 					sourcemap: true,
+					outDir: "../events/public/dashboard",
+					chunkSizeWarningLimit: 1500,
+					target: "es2015",
 				},
 			}),
 			vue(),
 		],
-		build: {
-			chunkSizeWarningLimit: 1500,
-			outDir: "../events/public/dashboard",
-			emptyOutDir: true,
-			target: "es2015",
-			sourcemap: true,
-		},
 		resolve: {
 			alias: {
 				"@": path.resolve(__dirname, "src"),
