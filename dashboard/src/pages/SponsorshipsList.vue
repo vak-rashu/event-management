@@ -12,6 +12,10 @@
 					name: 'sponsorship-details',
 					params: { enquiryId: row.name },
 				}),
+				emptyState: {
+					title: 'No sponsorship inquiries yet',
+					description: 'Your sponsorship inquiries will appear here',
+				},
 			}"
 		>
 			<template #cell="{ item, row, column }">
